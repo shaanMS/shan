@@ -1,0 +1,2363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C Arrays — Hinglish Interactive Guide | Biology & Beginners ke liye</title>
+<style>
+/* ============ RESET & BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  background:#070b16;color:#e8edf7;overflow:hidden;
+  display:flex;flex-direction:column;height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ============ BACKGROUND ORBS ============ */
+.orbs{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(95px);opacity:.34}
+.orb.a{width:560px;height:560px;background:#3b82f6;top:-190px;left:-150px}
+.orb.b{width:500px;height:500px;background:#a855f7;bottom:-200px;right:-130px}
+.orb.c{width:420px;height:420px;background:#06b6d4;top:38%;left:52%;opacity:.20}
+
+/* ============ TOPBAR ============ */
+.topbar{
+  position:relative;z-index:6;display:flex;align-items:center;gap:14px;
+  padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.07);
+  backdrop-filter:blur(14px);background:rgba(7,11,22,.6);
+}
+.brand{font-weight:700;font-size:14px;letter-spacing:.08em;
+  background:linear-gradient(100deg,#38e1ff,#a78bfa 50%,#f472b6);
+  -webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+.topbar .spacer{flex:1}
+.counter{font-size:12.5px;color:#94a3b8;font-variant-numeric:tabular-nums;
+  border:1px solid rgba(255,255,255,.1);padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.03)}
+.icon-btn{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:#cbd5e1;border-radius:10px;padding:7px 11px;cursor:pointer;font-size:14px;
+  transition:.2s;line-height:1;
+}
+.icon-btn:hover{background:rgba(255,255,255,.12);color:#fff;transform:translateY(-1px)}
+
+/* ============ PROGRESS ============ */
+.progress{position:relative;z-index:6;height:3px;background:rgba(255,255,255,.06)}
+#progressBar{height:100%;width:0%;border-radius:0 3px 3px 0;
+  background:linear-gradient(90deg,#38e1ff,#a78bfa,#f472b6);
+  transition:width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px rgba(56,225,255,.6)}
+
+/* ============ DECK ============ */
+.deck{position:relative;flex:1;z-index:2;overflow:hidden}
+.slide{
+  position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
+  padding:34px 26px 46px;
+  opacity:0;transform:translateY(26px) scale(.985);
+  transition:opacity .45s ease,transform .45s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+}
+.slide.active{opacity:1;transform:none;pointer-events:auto}
+.slide::-webkit-scrollbar{width:9px}
+.slide::-webkit-scrollbar-track{background:transparent}
+.slide::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:9px}
+.slide::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.25)}
+.wrap{max-width:1080px;margin:0 auto}
+.center{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%}
+
+/* ============ TYPOGRAPHY ============ */
+h1{font-size:clamp(30px,5.4vw,58px);line-height:1.05;letter-spacing:-.025em;font-weight:800}
+h2{font-size:clamp(21px,2.9vw,33px);letter-spacing:-.02em;font-weight:750;margin-bottom:6px}
+h3{font-size:16.5px;font-weight:700;margin-bottom:10px;color:#dbe4f3;letter-spacing:-.01em}
+.grad{background:linear-gradient(100deg,#38e1ff,#a78bfa 45%,#f472b6);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:#a4b2c8;font-size:clamp(14px,1.55vw,17px);line-height:1.7;max-width:780px}
+.sub{color:#8b9ab3;font-size:14.5px;line-height:1.7}
+p{line-height:1.72}
+.slide-head{margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.slide-head .kicker{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:#38e1ff;font-weight:700;margin-bottom:8px;opacity:.9}
+
+/* ============ CARDS ============ */
+.card{
+  background:linear-gradient(160deg,rgba(255,255,255,.065),rgba(255,255,255,.018));
+  border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:20px 22px;
+  box-shadow:0 24px 55px -30px rgba(0,0,0,.95);
+}
+.card+.card{margin-top:16px}
+.card h3{margin-top:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* ============ PILLS & CHIPS ============ */
+.pill{display:inline-block;font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;
+  font-weight:700;color:#7dd3fc;border:1px solid rgba(125,211,252,.3);
+  background:rgba(56,225,255,.07);padding:6px 14px;border-radius:99px;margin-bottom:18px}
+.chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:26px}
+.chip{font-size:12.5px;padding:7px 14px;border-radius:99px;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);color:#b9c6da}
+.chip.cy{border-color:rgba(56,225,255,.35);color:#7dd3fc;background:rgba(56,225,255,.08)}
+.chip.vi{border-color:rgba(167,139,250,.35);color:#c4b5fd;background:rgba(167,139,250,.08)}
+.chip.pk{border-color:rgba(244,114,182,.35);color:#f9a8d4;background:rgba(244,114,182,.08)}
+.chip.gr{border-color:rgba(74,222,128,.35);color:#86efac;background:rgba(74,222,128,.08)}
+
+/* ============ CODE ============ */
+.code-wrap{position:relative;margin:14px 0}
+pre{
+  background:#060a13;border:1px solid rgba(255,255,255,.09);border-radius:14px;
+  padding:16px 18px;overflow-x:auto;
+  font-family:'JetBrains Mono','Fira Code','SF Mono',Consolas,monospace;
+  font-size:13.2px;line-height:1.72;color:#cbd5e1;
+}
+pre::-webkit-scrollbar{height:8px}
+pre::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:8px}
+code{font-family:'JetBrains Mono','Fira Code',Consolas,monospace}
+:not(pre)>code{background:rgba(56,225,255,.10);border:1px solid rgba(56,225,255,.18);
+  color:#7dd3fc;padding:2px 7px;border-radius:6px;font-size:12.8px}
+.tk-kw{color:#c084fc;font-weight:600}
+.tk-str{color:#86efac}
+.tk-com{color:#5b6b85;font-style:italic}
+.tk-num{color:#fbbf24}
+.tk-pre{color:#38e1ff;font-weight:600}
+.copy-btn{
+  position:absolute;top:9px;right:9px;font-size:11px;padding:5px 10px;border-radius:8px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  color:#94a3b8;cursor:pointer;opacity:0;transition:.2s;font-family:inherit;
+}
+.code-wrap:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(56,225,255,.16);color:#7dd3fc;border-color:rgba(56,225,255,.4)}
+
+/* ============ TABLES ============ */
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13.6px;margin:14px 0;
+  border:1px solid rgba(255,255,255,.09);border-radius:14px;overflow:hidden}
+.tbl th{background:rgba(255,255,255,.055);padding:11px 14px;text-align:left;
+  font-weight:700;color:#cbd5e1;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;
+  border-bottom:1px solid rgba(255,255,255,.09)}
+.tbl td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.05);color:#a9b7cb;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.028)}
+.tbl .ok{color:#4ade80;font-weight:700}
+.tbl .no{color:#fb7185;font-weight:700}
+
+/* ============ NOTES ============ */
+.note{border-radius:14px;padding:14px 17px;font-size:13.6px;line-height:1.7;
+  margin:14px 0;border-left:3px solid;display:flex;gap:11px;align-items:flex-start}
+.note .ico{font-size:16px;line-height:1.4;flex-shrink:0}
+.note.tip{background:rgba(56,225,255,.07);border-color:#38e1ff;color:#a5e8ff}
+.note.warn{background:rgba(251,191,36,.07);border-color:#fbbf24;color:#fde68a}
+.note.dang{background:rgba(251,113,133,.08);border-color:#fb7185;color:#fecdd3}
+.note.ok{background:rgba(74,222,128,.07);border-color:#4ade80;color:#bbf7d0}
+.note.bio{background:rgba(167,139,250,.08);border-color:#a78bfa;color:#ddd6fe}
+
+/* ============ INTERACTIVE DEMOS ============ */
+.demo{background:rgba(0,0,0,.28);border:1px dashed rgba(56,225,255,.28);
+  border-radius:16px;padding:18px;margin:16px 0}
+.demo-label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  color:#38e1ff;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.demo-label::before{content:'';width:7px;height:7px;border-radius:50%;background:#38e1ff;
+  box-shadow:0 0 10px #38e1ff;animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.array-viz{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;padding:8px 0}
+.cell{
+  width:72px;border-radius:12px;overflow:hidden;cursor:pointer;
+  border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);
+  transition:.22s;text-align:center;user-select:none;
+}
+.cell:hover{transform:translateY(-4px);border-color:rgba(56,225,255,.55);box-shadow:0 12px 26px -14px rgba(56,225,255,.7)}
+.cell-idx{font-size:10.5px;padding:4px 0;background:rgba(255,255,255,.06);color:#7c8ba3;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.03em}
+.cell-val{padding:13px 0;font-size:17px;font-weight:700;color:#e8edf7;
+  font-family:'JetBrains Mono',monospace}
+.cell.hl{border-color:#38e1ff;background:rgba(56,225,255,.16);
+  box-shadow:0 0 22px -4px rgba(56,225,255,.8);transform:translateY(-4px)}
+.cell.hl .cell-val{color:#a5f3ff}
+.cell.done{border-color:rgba(74,222,128,.55);background:rgba(74,222,128,.12)}
+.cell.kill{border-color:rgba(251,113,133,.55);background:rgba(251,113,133,.14)}
+.cell.low{border-color:rgba(251,191,36,.6);background:rgba(251,191,36,.12)}
+.cell.mid{border-color:#a78bfa;background:rgba(167,139,250,.2)}
+.cell.high{border-color:rgba(56,225,255,.6);background:rgba(56,225,255,.12)}
+.cell.empty{border-style:dashed;opacity:.32}
+.cell.dna{background:linear-gradient(160deg,rgba(167,139,250,.15),rgba(56,225,255,.1))}
+.cell.dna .cell-val{color:#c4b5fd;font-size:20px}
+
+.info-panel{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.info-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:11px;padding:9px 16px;font-size:13px;min-width:120px;text-align:center}
+.info-box .k{display:block;font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:#7c8ba3;margin-bottom:4px}
+.info-box .v{font-family:'JetBrains Mono',monospace;font-weight:700;color:#38e1ff;font-size:14.5px}
+
+.controls-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:14px}
+.btn{
+  font-family:inherit;font-size:13px;font-weight:600;padding:9px 16px;border-radius:10px;
+  border:1px solid rgba(56,225,255,.32);background:rgba(56,225,255,.1);color:#7dd3fc;
+  cursor:pointer;transition:.18s;
+}
+.btn:hover{background:rgba(56,225,255,.2);transform:translateY(-1.5px);box-shadow:0 10px 22px -12px rgba(56,225,255,.9)}
+.btn:active{transform:translateY(0)}
+.btn.vi{border-color:rgba(167,139,250,.35);background:rgba(167,139,250,.1);color:#c4b5fd}
+.btn.vi:hover{background:rgba(167,139,250,.2)}
+.btn.pk{border-color:rgba(244,114,182,.35);background:rgba(244,114,182,.1);color:#f9a8d4}
+.btn.pk:hover{background:rgba(244,114,182,.2)}
+.btn.gh{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.14);color:#a9b7cb}
+.btn.gh:hover{background:rgba(255,255,255,.1);color:#fff;box-shadow:none}
+
+input[type=number],input[type=text]{
+  font-family:'JetBrains Mono',monospace;font-size:13px;padding:8px 11px;width:88px;
+  border-radius:9px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.4);color:#e8edf7;outline:none;transition:.18s;
+}
+input:focus{border-color:#38e1ff;box-shadow:0 0 0 3px rgba(56,225,255,.13)}
+.log{font-family:'JetBrains Mono',monospace;font-size:12.4px;color:#8b9ab3;
+  margin-top:12px;min-height:22px;text-align:center;line-height:1.7}
+.log b{color:#38e1ff}
+
+/* toggle switch */
+.switch{display:inline-flex;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  border-radius:11px;padding:3px;gap:3px}
+.switch button{font-family:inherit;font-size:12.2px;font-weight:600;padding:7px 15px;border:none;
+  border-radius:8px;background:transparent;color:#8b9ab3;cursor:pointer;transition:.2s}
+.switch button.on{background:linear-gradient(135deg,#38e1ff,#a78bfa);color:#05070f;
+  box-shadow:0 6px 16px -8px rgba(56,225,255,.95)}
+
+/* TABS */
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-family:inherit;font-size:12.6px;font-weight:600;padding:8px 15px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.04);color:#93a2b8;
+  cursor:pointer;transition:.2s}
+.tab:hover{background:rgba(255,255,255,.09);color:#dbe4f3}
+.tab.on{background:linear-gradient(135deg,rgba(56,225,255,.2),rgba(167,139,250,.2));
+  border-color:rgba(56,225,255,.5);color:#a5f3ff}
+.tab-panel{display:none}
+.tab-panel.on{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* QUIZ */
+.q{margin-bottom:18px}
+.q .qt{font-size:14.5px;font-weight:650;margin-bottom:10px;color:#dbe4f3;line-height:1.6}
+.q .opts{display:flex;flex-direction:column;gap:7px}
+.opt{text-align:left;font-family:inherit;font-size:13.2px;
+  padding:11px 15px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.035);color:#a9b7cb;cursor:pointer;transition:.18s;line-height:1.5}
+.opt:hover{border-color:rgba(56,225,255,.4);background:rgba(56,225,255,.07);color:#dbe4f3}
+.opt.right{border-color:#4ade80;background:rgba(74,222,128,.14);color:#bbf7d0}
+.opt.wrong{border-color:#fb7185;background:rgba(251,113,133,.14);color:#fecdd3}
+.opt:disabled{cursor:default}
+
+/* ============ FOOTER CONTROLS ============ */
+.controls{
+  position:relative;z-index:6;display:flex;align-items:center;gap:14px;
+  padding:11px 18px;border-top:1px solid rgba(255,255,255,.07);
+  backdrop-filter:blur(14px);background:rgba(7,11,22,.6);
+}
+.nav-btn{
+  font-family:inherit;font-size:13.5px;font-weight:650;padding:9px 18px;border-radius:11px;
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.055);
+  color:#cbd5e1;cursor:pointer;transition:.2s;white-space:nowrap;
+}
+.nav-btn:hover:not(:disabled){background:rgba(56,225,255,.14);border-color:rgba(56,225,255,.45);
+  color:#a5f3ff;transform:translateY(-1.5px)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.dots{flex:1;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;overflow:hidden}
+.dot{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.18);
+  cursor:pointer;transition:.25s;border:none;padding:0}
+.dot:hover{background:rgba(255,255,255,.4)}
+.dot.on{width:22px;background:linear-gradient(90deg,#38e1ff,#a78bfa);box-shadow:0 0 12px rgba(56,225,255,.7)}
+@media(max-width:700px){.dots{display:none}}
+
+/* ============ SIDEBAR TOC ============ */
+.toc{
+  position:fixed;top:0;left:0;bottom:0;width:300px;z-index:20;
+  background:rgba(9,13,24,.97);backdrop-filter:blur(20px);
+  border-right:1px solid rgba(255,255,255,.1);
+  transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+}
+.toc.open{transform:none}
+.toc-head{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:space-between}
+.toc-head span{font-size:12px;letter-spacing:.15em;text-transform:uppercase;
+  font-weight:700;color:#38e1ff}
+.toc-list{flex:1;overflow-y:auto;padding:10px}
+.toc-list::-webkit-scrollbar{width:6px}
+.toc-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:6px}
+.toc-item{
+  display:flex;gap:11px;align-items:center;width:100%;text-align:left;
+  font-family:inherit;font-size:13.2px;padding:10px 13px;border-radius:10px;
+  border:none;background:transparent;color:#93a2b8;cursor:pointer;transition:.18s;
+  margin-bottom:2px;line-height:1.4;
+}
+.toc-item:hover{background:rgba(255,255,255,.06);color:#dbe4f3}
+.toc-item.on{background:linear-gradient(90deg,rgba(56,225,255,.15),transparent);
+  color:#a5f3ff;font-weight:600}
+.toc-item .num{font-family:'JetBrains Mono',monospace;font-size:11px;color:#5b6b85;
+  min-width:22px}
+.toc-item.on .num{color:#38e1ff}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:19;opacity:0;
+  pointer-events:none;transition:.3s}
+.backdrop.on{opacity:1;pointer-events:auto}
+
+/* ============ MISC ============ */
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;
+  padding:5px 11px;border-radius:8px;letter-spacing:.03em}
+.badge.tc{background:rgba(251,113,133,.13);color:#fda4af;border:1px solid rgba(251,113,133,.3)}
+.badge.gc{background:rgba(74,222,128,.13);color:#86efac;border:1px solid rgba(74,222,128,.3)}
+.badge.bio{background:rgba(167,139,250,.13);color:#c4b5fd;border:1px solid rgba(167,139,250,.3)}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,.055);font-size:13.4px}
+.kv:last-child{border-bottom:none}
+.kv .k{color:#8b9ab3}
+.kv .v{font-family:'JetBrains Mono',monospace;color:#dbe4f3;font-weight:600;text-align:right}
+ul.clean{list-style:none;padding-left:0}
+ul.clean li{position:relative;padding-left:22px;margin-bottom:10px;font-size:13.8px;
+  line-height:1.7;color:#a9b7cb}
+ul.clean li::before{content:'▸';position:absolute;left:4px;color:#38e1ff;font-weight:700}
+.real-box{background:linear-gradient(140deg,rgba(167,139,250,.13),rgba(56,225,255,.07));
+  border:1px solid rgba(167,139,250,.3);border-radius:16px;padding:16px 20px;margin:14px 0;
+  display:flex;gap:14px;align-items:flex-start}
+.real-box .emoji{font-size:26px;flex-shrink:0}
+.real-box .txt{font-size:13.8px;line-height:1.7;color:#ddd6fe}
+.real-box .txt b{color:#c4b5fd}
+.scroll-hint{position:absolute;bottom:10px;right:22px;font-size:11px;color:#4d5b73;
+  letter-spacing:.1em;text-transform:uppercase;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div class="orbs">
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+</div>
+
+<!-- ============ TOPBAR ============ -->
+<div class="topbar">
+  <button class="icon-btn" id="menuBtn" title="Contents">☰</button>
+  <div class="brand">C Arrays · Hinglish Guide 🧬</div>
+  <div class="spacer"></div>
+  <div class="counter"><span id="cur">1</span> / <span id="total">22</span></div>
+</div>
+<div class="progress"><div id="progressBar"></div></div>
+
+<!-- ============ SIDEBAR ============ -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="toc" id="toc">
+  <div class="toc-head">
+    <span>Contents</span>
+    <button class="icon-btn" id="closeToc">✕</button>
+  </div>
+  <div class="toc-list" id="tocList"></div>
+</aside>
+
+<!-- ============ DECK ============ -->
+<main class="deck" id="deck">
+
+<!-- ===== SLIDE 1 : TITLE ===== -->
+<section class="slide" data-title="Welcome">
+  <div class="wrap center">
+    <div class="pill">Biology Students & Beginners ke liye</div>
+    <h1><span class="grad">C Arrays</span><br>Bilkul Zero se Hero tak</h1>
+    <p class="lead" style="margin-top:20px">
+      Agar tum Biology ke student ho aur coding pehli baar seekh rahe ho — toh
+      yeh guide <b style="color:#38e1ff">tumhare liye hi bana hai</b>.
+      DNA sequence, blood test reports, attendance register — sab kuch array hi hai!
+      Hinglish me, real examples ke saath, step by step.
+    </p>
+    <div class="chips">
+      <span class="chip vi">🧬 DNA = char array</span>
+      <span class="chip cy">🩸 Blood Report = int array</span>
+      <span class="chip pk">📋 Attendance = 2D array</span>
+      <span class="chip gr">🎯 Live Demos</span>
+      <span class="chip cy">⚡ Turbo C vs GCC</span>
+      <span class="chip vi">📝 Quiz</span>
+    </div>
+    <p class="sub" style="margin-top:34px;font-size:12.5px;letter-spacing:.1em">
+      USE&nbsp; <b style="color:#38e1ff">←</b> &nbsp;<b style="color:#38e1ff">→</b> &nbsp;KEYS&nbsp; · &nbsp;<b style="color:#38e1ff">☰</b>&nbsp; FOR MENU
+    </p>
+  </div>
+</section>
+
+<!-- ===== SLIDE 2 : ARRAY KYA HAI? ===== -->
+<section class="slide" data-title="Array Kya Hai?">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 01 · Basics</div>
+      <h2>Array <span class="grad">kya hota hai</span>? Ekdum Simple!</h2>
+    </div>
+
+    <div class="card">
+      <p style="font-size:15px;color:#b9c6da">
+        Socho tumhare paas <b style="color:#38e1ff">10 students ke marks</b> hain.
+        Kya tum 10 alag-alag variables banaoge? 🤯
+      </p>
+      <div class="code-wrap"><pre><code>int marks1, marks2, marks3, marks4, marks5;
+int marks6, marks7, marks8, marks9, marks10;
+// Bohot ganda tareeka! 😵</code></pre></div>
+      <p style="font-size:15px;color:#b9c6da;margin-top:10px">
+        Iske bajaye, ek hi <b style="color:#a78bfa">array</b> banao. Bas!
+      </p>
+      <div class="code-wrap"><pre><code>int marks[10];   // Ek line me 10 dabbe! 🎉</code></pre></div>
+      <p class="sub" style="margin-top:14px;font-size:14px">
+        <b>Simple definition:</b> Array ek <b>dabba</b> (container) hai jisme same type ki
+        cheezein line me rakhi jaati hain. Har cheez ka apna <b>number (index)</b> hota hai,
+        aur pehla number <b>0</b> se shuru hota hai — 1 se nahi!
+      </p>
+    </div>
+
+    <div class="real-box">
+      <span class="emoji">🧬</span>
+      <div class="txt">
+        <b>Biology Example:</b> Socho ek DNA sequence hai:
+        <b>A T G C A T G C</b>. Yeh 8 characters ka ek <b>char array</b> hai! Har character
+        ka apna index hai (0, 1, 2...) — bilkul waise hi jaise biology me base positions
+        count karte hain.
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Array Explorer — kisi bhi cell pe click karo</div>
+
+      <div class="controls-row">
+        <div class="switch" id="archSwitch">
+          <button class="on" data-bytes="4">GCC · 64-bit (int = 4 bytes)</button>
+          <button data-bytes="2">Turbo C · 16-bit (int = 2 bytes)</button>
+        </div>
+      </div>
+
+      <div class="array-viz" id="viz1"></div>
+
+      <div class="info-panel">
+        <div class="info-box"><span class="k">Index</span><span class="v" id="v1i">—</span></div>
+        <div class="info-box"><span class="k">Value</span><span class="v" id="v1v">—</span></div>
+        <div class="info-box"><span class="k">Address</span><span class="v" id="v1a">—</span></div>
+        <div class="info-box"><span class="k">Bytes</span><span class="v" id="v1b">—</span></div>
+      </div>
+      <div class="log" id="v1log">👆 Kisi bhi cell pe click karo — uska index, value aur address dikhega.</div>
+    </div>
+
+    <div class="note bio">
+      <span class="ico">🧬</span>
+      <div><b>Yaad rakho:</b> Array hamesha <b>0 se shuru</b> hota hai. Agar array ka size
+      10 hai, toh valid indices <code>0</code> se <code>9</code> tak hain.
+      <code>marks[10]</code> likhna galti hai — woh array ke bahar hai!</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 3 : REAL LIFE EXAMPLES ===== -->
+<section class="slide" data-title="Real Life Examples">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 02 · Real World</div>
+      <h2>Array <span class="grad">kahan-kahan</span> use hota hai?</h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:20px">
+      Array sirf theory nahi hai — yeh tumhare aas-paas har jagah hai. Chalo dekhte hain:
+    </p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>🩸 Blood Test Report</h3>
+        <p class="sub" style="margin-bottom:10px">Patient ke 5 din ke hemoglobin readings:</p>
+        <div class="code-wrap"><pre><code>float hb[5] = {11.2, 11.8, 12.1, 11.9, 12.5};
+// hb[0] = Day 1, hb[1] = Day 2, ...</code></pre></div>
+        <div class="real-box" style="margin:8px 0 0 0;padding:12px 14px">
+          <span class="emoji" style="font-size:20px">💉</span>
+          <div class="txt" style="font-size:13px">
+            Average nikalna ho, max/min chahiye, ya trend dekhna ho — array ekdum perfect!
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🧬 DNA Sequence</h3>
+        <p class="sub" style="margin-bottom:10px">Ek gene ka base sequence store karna:</p>
+        <div class="code-wrap"><pre><code>char dna[20] = "ATGCATGCAT";
+// dna[0]='A', dna[1]='T', dna[2]='G'...</code></pre></div>
+        <div class="real-box" style="margin:8px 0 0 0;padding:12px 14px">
+          <span class="emoji" style="font-size:20px">🔬</span>
+          <div class="txt" style="font-size:13px">
+            Kisi specific position pe kaunsa base hai — yeh index se turant pata chalta hai!
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>📋 Class Attendance</h3>
+        <p class="sub" style="margin-bottom:10px">40 students ka attendance (P/A):</p>
+        <div class="code-wrap"><pre><code>char att[40];
+// att[0] = 'P', att[1] = 'A', ...
+// att[39] = last student</code></pre></div>
+        <div class="real-box" style="margin:8px 0 0 0;padding:12px 14px">
+          <span class="emoji" style="font-size:20px">🏫</span>
+          <div class="txt" style="font-size:13px">
+            Roll number = index! Roll 1 ka attendance <code>att[0]</code> me.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🌡️ Temperature Records</h3>
+        <p class="sub" style="margin-bottom:10px">Ek mahine ke daily temperatures:</p>
+        <div class="code-wrap"><pre><code>float temp[30];
+temp[0] = 28.5;   // Day 1
+temp[29] = 31.2;  // Day 30</code></pre></div>
+        <div class="real-box" style="margin:8px 0 0 0;padding:12px 14px">
+          <span class="emoji" style="font-size:20px">🌤️</span>
+          <div class="txt" style="font-size:13px">
+            Hottest day, coldest day, average — sab easy!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note tip">
+      <span class="ico">💡</span>
+      <div><b>Golden Rule:</b> Jab bhi same type ki cheezein <b>ek group</b> me store karni ho,
+      aur unhe <b>index se access</b> karna ho — array use karo!</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 4 : DECLARATION ===== -->
+<section class="slide" data-title="Declaration & Initialization">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 03</div>
+      <h2>Array <span class="grad">Banana</span> aur <span class="grad">Bharna</span></h2>
+    </div>
+
+    <h3>1 · Array Declare Karna</h3>
+    <p class="sub" style="margin-bottom:10px">Syntax bilkul simple hai:</p>
+    <div class="code-wrap"><pre><code>data_type  array_name[size];
+
+// Jaise:
+int    marks[10];       // 10 integers ke liye
+float  hb[5];           // 5 float numbers
+char   dna[20];         // 20 characters
+double matrix[3][3];    // 3x3 ka 2D array</code></pre></div>
+
+    <div class="grid2" style="margin-top:16px">
+      <div class="card">
+        <h3>Memory me kaisa dikhta hai?</h3>
+        <div class="array-viz" id="viz2"></div>
+        <p class="sub" style="text-align:center;margin-top:12px;font-size:12.5px">
+          <code>int marks[5] = {85, 92, 78, 95, 88};</code>
+        </p>
+      </div>
+      <div class="card">
+        <h3>Addresses kaise badhte hain?</h3>
+        <div class="kv"><span class="k">marks[0]</span><span class="v">1000</span></div>
+        <div class="kv"><span class="k">marks[1]</span><span class="v">1004</span></div>
+        <div class="kv"><span class="k">marks[2]</span><span class="v">1008</span></div>
+        <div class="kv"><span class="k">marks[3]</span><span class="v">1012</span></div>
+        <div class="kv"><span class="k">marks[4]</span><span class="v">1016</span></div>
+        <p class="sub" style="margin-top:10px;font-size:12.5px">
+          Har <code>int</code> 4 bytes ka (GCC me). Isliye address +4 badhta hai.
+        </p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:26px">2 · Array Bharna (Initialization) — 5 Tareeke</h3>
+    <div class="tabs" id="initTabs">
+      <button class="tab on" data-p="p1">Pura Bharna</button>
+      <button class="tab" data-p="p2">Aadha Bharna</button>
+      <button class="tab" data-p="p3">Size Auto</button>
+      <button class="tab" data-p="p4">Designated (GCC)</button>
+      <button class="tab" data-p="p5">Range (GCC)</button>
+    </div>
+
+    <div class="tab-panel on" id="p1">
+      <div class="code-wrap"><pre><code>int marks[5] = {85, 92, 78, 95, 88};
+// Saare 5 elements set ho gaye. Sabse safe tareeka. ✅</code></pre></div>
+    </div>
+    <div class="tab-panel" id="p2">
+      <div class="code-wrap"><pre><code>int marks[5] = {85, 92};
+// marks[0]=85, marks[1]=92
+// marks[2], [3], [4] => 0 SIRF agar array 'static' ho
+// Warna woh junk values hongi! ⚠️</code></pre></div>
+      <div class="note warn">
+        <span class="ico">⚠️</span>
+        <div>Jo elements tumne nahi bhare, unki value <b>kuch bhi</b> ho sakti hai
+        (garbage) — jab tak array <code>static</code> na ho. Isliye hamesha
+        pura bharo ya <code>{0}</code> se initialize karo.</div>
+      </div>
+    </div>
+    <div class="tab-panel" id="p3">
+      <div class="code-wrap"><pre><code>int marks[] = {85, 92, 78, 95, 88};
+// Compiler khud count kar lega -> size = 5 😎</code></pre></div>
+      <div class="note tip">
+        <span class="ico">💡</span>
+        <div>Element count nikalne ka safe tareeka:
+        <code>sizeof(marks) / sizeof(marks[0])</code></div>
+      </div>
+    </div>
+    <div class="tab-panel" id="p4">
+      <div class="code-wrap"><pre><code>int marks[10] = { [2] = 85, [7] = 92 };
+// Sirf index 2 aur 7 set hue, baaki 0
+// GCC me chalta hai, Turbo C me NAHI! ⚠️</code></pre></div>
+      <div class="note warn">
+        <span class="ico">⚠️</span>
+        <div><b>Turbo C yeh support nahi karta</b> (C89/C90 purana hai). GCC me C99 se
+        yeh feature aata hai.</div>
+      </div>
+    </div>
+    <div class="tab-panel" id="p5">
+      <div class="code-wrap"><pre><code>int att[100] = { [0 ... 9] = 1, [10 ... 98] = 2, 3 };
+// Index 0-9   = 1
+// Index 10-98 = 2
+// Index 99    = 3</code></pre></div>
+      <div class="note tip">
+        <span class="ico">💡</span>
+        <div>Yeh <b>GCC extension</b> hai — Turbo C me nahi chalega. Agar coding exam
+        Turbo C me hai toh avoid karo.</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 5 : TURBO C vs GCC INTRO ===== -->
+<section class="slide" data-title="Turbo C vs GCC — Kyun Matter Karta Hai?">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 04 · Bahut Important!</div>
+      <h2>Turbo C <span class="grad">vs</span> GCC — Fark Kyun?</h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Tumhare college me shayad <b>Turbo C</b> use hota hai, aur tumhare laptop pe
+      <b>GCC</b> (ya online compiler). Dono me <b>bohot bada fark</b> hai — aur agar
+      yeh nahi pata toh program baar-baar fail hoga. Chalo samjhte hain!
+    </p>
+
+    <div class="grid2">
+      <div class="card" style="border-color:rgba(251,113,133,.28)">
+        <h3>🔴 Turbo C — Purana Zamana</h3>
+        <ul class="clean">
+          <li>Bana tha <b>1989-90</b> me, jab computers 16-bit the</li>
+          <li>Sirf <b>64 KB</b> tak ka array bana sakta hai — usse bada NAHI</li>
+          <li><code>int</code> sirf <b>2 bytes</b> ka hota hai</li>
+          <li>Array ka size <b>fixed</b> hona chahiye (compile time pe pata ho)</li>
+          <li><code>//</code> comment bhi nahi support karta (C89 me nahi tha)</li>
+          <li><code>clrscr()</code>, <code>getch()</code> jaise functions hain</li>
+        </ul>
+      </div>
+
+      <div class="card" style="border-color:rgba(74,222,128,.28)">
+        <h3>🟢 GCC — Modern Zamana</h3>
+        <ul class="clean">
+          <li>32-bit aur 64-bit dono support karta hai</li>
+          <li>Array ka size <b>RAM jitna</b> bada ho sakta hai</li>
+          <li><code>int</code> <b>4 bytes</b> ka hota hai</li>
+          <li><b>Variable size arrays</b> ban sakte hain (VLA)</li>
+          <li>C99, C11, C17 — sab modern features hain</li>
+          <li>Linux, Mac, Windows sab pe chalta hai</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note warn">
+      <span class="ico">⚠️</span>
+      <div><b>Yeh yaad rakhna:</b> Agar tumhara code Turbo C me chal raha hai aur GCC me
+      nahi (ya ulta) — 90% chance hai ki problem <b>64 KB limit</b> ya <b>VLA</b>
+      ki hai. Neeche wale chapters me detail me samjhenge.</div>
+    </div>
+
+    <div class="real-box">
+      <span class="emoji">📚</span>
+      <div class="txt">
+        <b>Biology analogy:</b> Turbo C ek <b>purani microscope</b> hai — kaam karti hai,
+        lekin sirf choti cheezein dekh sakti hai. GCC ek <b>modern electron microscope</b>
+        hai — bada, flexible, aur bahut kuch kar sakta hai. Dono se kaam hota hai, par
+        naye experiments ke liye naya instrument chahiye!
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 6 : VLA ===== -->
+<section class="slide" data-title="VLA — Variable Length Array">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 05 · Turbo C ki sabse badi problem</div>
+      <h2>Variable Length Array <span class="grad">(VLA)</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Socho user input karega ki uska DNA sequence kitna lamba hai — 10 bases ya 1000.
+      Array ka size toh <b>runtime pe pata chalega</b>, compile time pe nahi.
+      Yahan Turbo C fail ho jaata hai. 😰
+    </p>
+
+    <div class="grid2">
+      <div class="card" style="border-color:rgba(251,113,133,.28)">
+        <h3><span class="badge tc">🔴 Turbo C</span> — FAIL</h3>
+        <div class="code-wrap"><pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n;
+    printf("DNA length? ");
+    scanf("%d", &amp;n);
+    char dna[n];   /* ❌ ERROR!
+       Turbo C me size fixed hona chahiye */
+    return 0;
+}</code></pre></div>
+        <div class="note dang">
+          <span class="ico">⛔</span>
+          <div>Turbo C kehta hai: <i>"Array size must be a constant!"</i></div>
+        </div>
+      </div>
+
+      <div class="card" style="border-color:rgba(74,222,128,.28)">
+        <h3><span class="badge gc">🟢 GCC</span> — PERFECT</h3>
+        <div class="code-wrap"><pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n;
+    printf("DNA length? ");
+    scanf("%d", &amp;n);
+    char dna[n];   /* ✅ Chal gaya!
+       C99 se VLA support hai */
+    return 0;
+}</code></pre></div>
+        <div class="note ok">
+          <span class="ico">✅</span>
+          <div>GCC me <b>C99</b> se yeh feature aata hai. Bohot handy hai!</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">GCC me VLA check kaise karo?</h3>
+    <div class="code-wrap"><pre><code>gcc -std=c90 -pedantic code.c   # Warning aayegi: "ISO C90 forbids VLA"
+gcc -std=c99 -pedantic code.c   # ✅ Bilkul saaf, koi warning nahi</code></pre></div>
+
+    <h3 style="margin-top:24px">🔥 Turbo C me Workaround — <code>malloc()</code> ka Jaadu</h3>
+    <p class="sub" style="margin-bottom:12px">
+      Turbo C me VLA nahi hai, lekin <b>dynamic memory</b> se kaam ho jaata hai:
+    </p>
+    <div class="code-wrap"><pre><code>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main() {
+    int n, i;
+    char *dna;   /* pointer, array nahi */
+
+    printf("DNA length? ");
+    scanf("%d", &amp;n);
+
+    dna = (char *)malloc(n * sizeof(char));  /* runtime pe memory mil gayi */
+    if (dna == NULL) {
+        printf("Memory nahi mili!\n");
+        return 1;
+    }
+
+    printf("Enter DNA: ");
+    scanf("%s", dna);
+
+    printf("Tumhara DNA: %s\n", dna);
+
+    free(dna);   /* zaroor free karo! */
+    return 0;
+}</code></pre></div>
+
+    <div class="note tip">
+      <span class="ico">💡</span>
+      <div><b>Rule of thumb:</b> Turbo C me ho? Toh <code>malloc()</code> tumhara best
+      friend hai. GCC me ho? Toh VLA use kar sakte ho, lekin <b>bade arrays</b> ke liye
+      <code>malloc()</code> hi safe hai.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 7 : MEMORY MODEL ===== -->
+<section class="slide" data-title="64 KB ki Deewar">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 06 · Turbo C ki deewar</div>
+      <h2>64 KB ki <span class="grad">Deewar</span> — Turbo C ki Limit</h2>
+    </div>
+
+    <div class="note dang">
+      <span class="ico">⛔</span>
+      <div><b>Turbo C me koi bhi ek object 65,536 bytes se bada NAHI ho sakta.</b>
+      Yeh 16-bit segmented memory ka natija hai. Bada array chahiye toh
+      <code>malloc()</code> use karo.</div>
+    </div>
+
+    <h3>Turbo C vs GCC — Numbers ki Baat</h3>
+    <table class="tbl">
+      <thead><tr><th>Cheez</th><th>Turbo C</th><th>GCC</th></tr></thead>
+      <tbody>
+        <tr><td>Architecture</td><td class="no">16-bit</td><td class="ok">32 / 64-bit</td></tr>
+        <tr><td><code>sizeof(int)</code></td><td>2 bytes</td><td>4 bytes</td></tr>
+        <tr><td><code>sizeof(pointer)</code></td><td>2 bytes</td><td>4 / 8 bytes</td></tr>
+        <tr><td>Max object size</td><td class="no">64 KB</td><td class="ok">RAM ke hisaab se</td></tr>
+        <tr><td>Memory model</td><td>Segmented (chote tukdon me)</td><td>Flat (pura ek jaisa)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Array Size Calculator — try karo!</div>
+      <div class="controls-row">
+        <span style="font-size:13.4px;color:#8b9ab3">Kitne <code>int</code> elements chahiye?</span>
+        <input type="number" id="sizeInput" value="20000" min="1" max="1000000">
+        <button class="btn" id="sizeCalc">Calculate</button>
+      </div>
+      <div class="info-panel">
+        <div class="info-box"><span class="k">Turbo C me</span><span class="v" id="szTC">—</span></div>
+        <div class="info-box"><span class="k">GCC me</span><span class="v" id="szGC">—</span></div>
+        <div class="info-box"><span class="k">Result</span><span class="v" id="szVerdict">—</span></div>
+      </div>
+      <div class="log" id="szLog">Number daalo aur Calculate dabao.</div>
+    </div>
+
+    <h3 style="margin-top:24px">Turbo C me Bada Array Kaise Banaye?</h3>
+    <div class="code-wrap"><pre><code>#include &lt;stdlib.h&gt;
+
+/* ❌ Turbo C me NAHI chalega: 40000 x 2 = 80,000 bytes > 64 KB */
+int hugeArray[40000];
+
+/* ✅ Turbo C me chalega — heap memory se */
+int *bigArray = (int *)malloc(40000 * sizeof(int));
+if (bigArray != NULL) {
+    bigArray[0] = 42;
+    /* ... kaam karo ... */
+    free(bigArray);   /* zaroor free karo */
+}</code></pre></div>
+
+    <div class="real-box">
+      <span class="emoji">🧪</span>
+      <div class="txt">
+        <b>Biology analogy:</b> Turbo C ek chhoti <b>petri dish</b> hai — 64 KB se zyada
+        culture nahi rakh sakte. GCC ek bada <b>bioreactor</b> hai — jitna chahiye utna
+        rakh sakte ho. Chhote experiments ke liye dono kaafi hain, par genome-size data
+        ke liye bada instrument chahiye!
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 8 : COMPARISON TABLE ===== -->
+<section class="slide" data-title="Full Comparison Table">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 07</div>
+      <h2>Turbo C vs GCC — <span class="grad">Ekdum Table Me</span></h2>
+    </div>
+
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:34%">Cheez</th><th style="width:33%">Turbo C (C89)</th><th style="width:33%">GCC (C99+)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Array size</td><td>Sirf compile-time constant</td><td>Constant <b>ya</b> variable (VLA)</td></tr>
+        <tr><td>Max array size</td><td class="no">~64 KB</td><td class="ok">RAM ke hisaab se</td></tr>
+        <tr><td><code>sizeof(int)</code></td><td>2 bytes</td><td>4 bytes</td></tr>
+        <tr><td>Designated initializers</td><td class="no">✗ Nahi</td><td class="ok">✓ <code>[i] = value</code></td></tr>
+        <tr><td>Range initializers</td><td class="no">✗ Nahi</td><td class="ok">✓ <code>[0 ... 9] = 1</code></td></tr>
+        <tr><td>Compound literals</td><td class="no">✗ Nahi</td><td class="ok">✓ <code>(int[]){1,2,3}</code></td></tr>
+        <tr><td><code>//</code> comments</td><td class="no">✗ Nahi</td><td class="ok">✓ Haan</td></tr>
+        <tr><td><code>clrscr()</code>, <code>getch()</code></td><td class="ok">✓ Hain</td><td class="no">✗ Nahi</td></tr>
+        <tr><td><code>qsort()</code> / <code>bsearch()</code></td><td class="ok">✓ Hain</td><td class="ok">✓ Hain</td></tr>
+        <tr><td>C Standard</td><td>C89 / C90</td><td>C89 · C99 · C11 · C17 · C23</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note tip">
+      <span class="ico">💡</span>
+      <div><b>Portability tip:</b> Agar aisa code likhna hai jo <b>dono me chale</b>, toh:
+        VLA avoid karo, designated initializers avoid karo, bade arrays ke liye
+        <code>malloc()</code> use karo, aur <code>int main(void)</code> likho.</div>
+    </div>
+
+    <div class="real-box">
+      <span class="emoji">🌍</span>
+      <div class="txt">
+        <b>Real world:</b> Aaj kal industry me <b>99% GCC ya Clang</b> hi use hota hai.
+        Turbo C sirf kuch purane colleges me syllabus ke liye hai. Toh Turbo C me
+        kaam chalane ke baad, <b>GCC bhi zaroor seekho</b> — wahi aage kaam aayega!
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 9 : TRAVERSAL ===== -->
+<section class="slide" data-title="Traversal — Har Element Dekhna">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 08 · Operations</div>
+      <h2>Traversal — <span class="grad">Har Ek Pe Ek Nazar</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Traversal matlab array ke <b>har element pe jaana</b> — ek-ek karke. Jaise
+      teacher attendance lagate waqt har roll number call karti hai. Simple loop se hota hai.
+    </p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>➡️ Aage Ki Taraf (Forward)</h3>
+        <div class="code-wrap"><pre><code>int marks[5] = {10, 20, 30, 40, 50};
+int n = 5;
+
+for (int i = 0; i &lt; n; i++) {
+    printf("marks[%d] = %d\n", i, marks[i]);
+}</code></pre></div>
+        <p class="sub" style="font-size:12.8px;margin-top:8px">
+          Index 0 se n-1 tak
+        </p>
+      </div>
+      <div class="card">
+        <h3>⬅️ Peeche Ki Taraf (Backward)</h3>
+        <div class="code-wrap"><pre><code>int marks[5] = {10, 20, 30, 40, 50};
+int n = 5;
+
+for (int i = n - 1; i &gt;= 0; i--) {
+    printf("marks[%d] = %d\n", i, marks[i]);
+}</code></pre></div>
+        <p class="sub" style="font-size:12.8px;margin-top:8px">
+          n-1 se 0 tak (ulti direction)
+        </p>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Traversal Dekho Live</div>
+      <div class="controls-row">
+        <button class="btn" id="trFwd">▶ Forward Chalao</button>
+        <button class="btn vi" id="trBwd">◀ Backward Chalao</button>
+        <button class="btn gh" id="trReset">Reset</button>
+      </div>
+      <div class="array-viz" id="viz3"></div>
+      <div class="log" id="trLog">👆 Button dabao — loop chalte hue dekho.</div>
+    </div>
+
+    <div class="note bio">
+      <span class="ico">🧬</span>
+      <div><b>Biology example:</b> DNA sequence <code>"ATGCAT"</code> me har base check karna —
+      <code>for (i = 0; i &lt; 6; i++) printf("%c ", dna[i]);</code> — yeh traversal hai!</div>
+    </div>
+
+    <div class="note tip">
+      <span class="ico">💡</span>
+      <div>Traversal <b>O(n)</b> hota hai — har element ek baar. Sum, max, min, search —
+      sab isi ke base pe bane hain.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 10 : INSERT / DELETE ===== -->
+<section class="slide" data-title="Insert & Delete">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 09</div>
+      <h2>Element <span class="grad">Daalna</span> aur <span class="grad">Nikalna</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Socho class me naya student aaya beech me — uske peeche wale sabko ek seat
+      <b>peeche khisakna</b> padega. Array me bhi exactly yahi hota hai!
+    </p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>➕ Insert at Position</h3>
+        <div class="code-wrap"><pre><code>void insertElement(int arr[], int *n,
+                   int pos, int value) {
+    if (pos &lt; 0 || pos &gt; *n) {
+        printf("Galat position!\n");
+        return;
+    }
+    /* elements ko right shift karo */
+    for (int i = *n; i &gt; pos; i--) {
+        arr[i] = arr[i - 1];
+    }
+    arr[pos] = value;
+    (*n)++;
+}</code></pre></div>
+      </div>
+      <div class="card">
+        <h3>➖ Delete at Position</h3>
+        <div class="code-wrap"><pre><code>void deleteElement(int arr[], int *n, int pos) {
+    if (pos &lt; 0 || pos &gt;= *n) {
+        printf("Galat position!\n");
+        return;
+    }
+    /* elements ko left shift karo */
+    for (int i = pos; i &lt; *n - 1; i++) {
+        arr[i] = arr[i + 1];
+    }
+    (*n)--;
+}</code></pre></div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Insert aur Delete karke dekho</div>
+      <div class="controls-row">
+        <input type="number" id="insPos" placeholder="pos" value="2" min="0" max="20">
+        <input type="number" id="insVal" placeholder="value" value="99">
+        <button class="btn" id="doInsert">＋ Insert</button>
+        <span style="width:14px"></span>
+        <input type="number" id="delPos" placeholder="pos" value="1" min="0" max="20">
+        <button class="btn pk" id="doDelete">－ Delete</button>
+        <button class="btn gh" id="doResetIns">Reset</button>
+      </div>
+      <div class="array-viz" id="viz4"></div>
+      <div class="info-panel">
+        <div class="info-box"><span class="k">Length</span><span class="v" id="insLen">5</span></div>
+        <div class="info-box"><span class="k">Capacity</span><span class="v" id="insCap">12</span></div>
+      </div>
+      <div class="log" id="insLog">Insert se elements right shift hote hain · Delete se left.</div>
+    </div>
+
+    <div class="note warn">
+      <span class="ico">⚠️</span>
+      <div>Dono operations <b>O(n)</b> hain — worst case me saare elements shift karne padte
+      hain. Yeh contiguous memory ka price hai. Linked list me O(1) hota, par random access
+      nahi milta. Trade-off hai!</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 11 : SEARCHING ===== -->
+<section class="slide" data-title="Searching">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 10</div>
+      <h2>Searching — <span class="grad">Ek Element Dhoondhna</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Array me kisi specific value ko dhoondhna. Do tareeke hain — ek simple (lekin slow),
+      ek smart (lekin sorted chahiye).
+    </p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>🔍 Linear Search · O(n)</h3>
+        <p class="sub" style="margin-bottom:10px">
+          Ek-ek karke check karo. <b>Kisi bhi array</b> pe chalta hai.
+        </p>
+        <div class="code-wrap"><pre><code>int linearSearch(int arr[], int n, int key) {
+    for (int i = 0; i &lt; n; i++) {
+        if (arr[i] == key)
+            return i;    /* mila! */
+    }
+    return -1;   /* nahi mila */
+}</code></pre></div>
+      </div>
+      <div class="card">
+        <h3>⚡ Binary Search · O(log n)</h3>
+        <p class="sub" style="margin-bottom:10px">
+          Beech se check karo, half discard karo. <b>Sirf sorted array</b> pe.
+        </p>
+        <div class="code-wrap"><pre><code>int binarySearch(int arr[], int low,
+                 int high, int key) {
+    while (low &lt;= high) {
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == key)  return mid;
+        else if (arr[mid] &lt; key) low = mid + 1;
+        else                     high = mid - 1;
+    }
+    return -1;
+}</code></pre></div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Search Race — dono algorithms compare karo!</div>
+      <div class="controls-row">
+        <input type="number" id="searchKey" value="41">
+        <button class="btn" id="runLinear">🔍 Linear</button>
+        <button class="btn vi" id="runBinary">⚡ Binary</button>
+        <button class="btn gh" id="searchReset">Reset</button>
+      </div>
+      <div class="array-viz" id="viz5"></div>
+      <div class="log" id="searchLog">Key daalo aur koi algorithm chuno.</div>
+    </div>
+
+    <div class="real-box">
+      <span class="emoji">📖</span>
+      <div class="txt">
+        <b>Dictionary analogy:</b> Linear search = page 1 se ek-ek page palat ke shabd dhoondhna.
+        Binary search = dictionary khol ke beech me jao, dekho shabd pehle hai ya baad me,
+        aur aadhi dictionary discard kar do. <b>Binary search 1000x fast hota hai!</b>
+      </div>
+    </div>
+
+    <div class="note tip">
+      <span class="ico">💡</span>
+      <div><b>Numbers:</b> n = 10,00,000 ke liye — Linear search ko 10 lakh comparisons
+      lag sakte hain, par Binary search ko sirf <b>20</b>. Ye hai O(log n) ki power!</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 12 : SORTING ===== -->
+<section class="slide" data-title="Sorting with qsort()">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 11</div>
+      <h2>Sorting <span class="grad">qsort()</span> se — Ready-made!</h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      C me already ek <b>powerful sorting function</b> bana hua hai —
+      <code>&lt;stdlib.h&gt;</code> me <b>qsort()</b>. Isko use karo, apna sorting
+      algorithm likhne ki zaroorat nahi!
+    </p>
+
+    <h3>Function Signature</h3>
+    <div class="code-wrap"><pre><code>void qsort(void *base, size_t nelem, size_t size,
+           int (*compar)(const void *, const void *));</code></pre></div>
+
+    <table class="tbl">
+      <thead><tr><th style="width:25%">Parameter</th><th>Kya batata hai</th></tr></thead>
+      <tbody>
+        <tr><td><code>base</code></td><td>Array ka pehla element ka address (array ka naam)</td></tr>
+        <tr><td><code>nelem</code></td><td>Kitne elements hain</td></tr>
+        <tr><td><code>size</code></td><td>Har element kitne bytes ka hai</td></tr>
+        <tr><td><code>compar</code></td><td>Comparison function — batata hai kaun bada hai</td></tr>
+      </tbody>
+    </table>
+
+    <h3 style="margin-top:24px">Poora Working Example</h3>
+    <div class="code-wrap"><pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/* Comparison function — chhota bada kaun? */
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+int main(void) {
+    int marks[] = {64, 25, 12, 22, 11};
+    int n = sizeof(marks) / sizeof(marks[0]);
+
+    qsort(marks, n, sizeof(int), compare);
+
+    for (int i = 0; i &lt; n; i++)
+        printf("%d ", marks[i]);
+    /* Output: 11 12 22 25 64 */
+
+    return 0;
+}</code></pre></div>
+
+    <div class="grid2" style="margin-top:18px">
+      <div class="card">
+        <h3>⬆️ Chhote se Bade (Ascending)</h3>
+        <div class="code-wrap"><pre><code>return (*(int *)a - *(int *)b);</code></pre></div>
+      </div>
+      <div class="card">
+        <h3>⬇️ Bade se Chhote (Descending)</h3>
+        <div class="code-wrap"><pre><code>return (*(int *)b - *(int *)a);</code></pre></div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · qsort() ko chalte hue dekho</div>
+      <div class="controls-row">
+        <button class="btn" id="sortBtn">⚡ qsort() Chalao</button>
+        <button class="btn gh" id="sortReset">Shuffle</button>
+      </div>
+      <div class="array-viz" id="viz6"></div>
+      <div class="log" id="sortLog">Button dabao aur sorting dekho.</div>
+    </div>
+
+    <div class="note tip">
+      <span class="ico">💡</span>
+      <div><b>Strings sort karni hain?</b> <code>strcmp()</code> comparator me use karo:
+      <code>return strcmp(*(char **)a, *(char **)b);</code></div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 13 : COPY / REVERSE / FILL ===== -->
+<section class="slide" data-title="Copy, Reverse, Fill">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 12</div>
+      <h2>Copy, Reverse aur <span class="grad">Fill</span></h2>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <h3>📋 Copy Karna</h3>
+        <p class="sub" style="margin-bottom:10px;font-size:13px">Ek array ki cheezein dusre me daalna.</p>
+        <div class="code-wrap"><pre><code>int src[5] = {1,2,3,4,5};
+int dest[5];
+
+memcpy(dest, src, sizeof(src));
+
+/* ya manual loop */
+for (int i = 0; i &lt; 5; i++)
+    dest[i] = src[i];</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>🔄 Reverse Karna</h3>
+        <p class="sub" style="margin-bottom:10px;font-size:13px">Ulta kar dena — pehla aakhri, aakhri pehla.</p>
+        <div class="code-wrap"><pre><code>void reverse(int arr[], int n) {
+    for (int i = 0; i &lt; n / 2; i++) {
+        int temp = arr[i];
+        arr[i] = arr[n - 1 - i];
+        arr[n - 1 - i] = temp;
+    }
+}</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>🧹 Fill Karna</h3>
+        <p class="sub" style="margin-bottom:10px;font-size:13px">Sab elements ko ek value se bhar dena.</p>
+        <div class="code-wrap"><pre><code>int arr[100];
+
+/* sab bytes 0 karo */
+memset(arr, 0, sizeof(arr));
+
+/* Warning! Yeh 1 nahi bharega */
+memset(arr, 1, sizeof(arr));</code></pre></div>
+      </div>
+    </div>
+
+    <div class="note warn">
+      <span class="ico">⚠️</span>
+      <div><b>memset ka trap:</b> <code>memset()</code> <b>bytes</b> set karta hai, elements nahi.
+      <code>memset(arr, 1, sizeof(arr))</code> har int ko 1 nahi banata — har
+      <b>byte</b> ko 1 banata hai, jisse garbage value jaise <code>0x01010101</code> aata hai.
+      Non-zero fill ke liye loop use karo.</div>
+    </div>
+
+    <div class="note tip">
+      <span class="ico">💡</span>
+      <div><code>memcpy()</code> aur <code>memset()</code> <code>&lt;string.h&gt;</code> me hote hain
+      aur <b>raw bytes</b> pe kaam karte hain — isliye super fast hain.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 14 : PASSING TO FUNCTIONS ===== -->
+<section class="slide" data-title="Function Me Array Bhejna">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 13</div>
+      <h2>Array ko <span class="grad">Function me Bhejna</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Jab tum array kisi function me bhejte ho, C actually <b>pehle element ka address</b>
+      bhejta hai. Array "decay" ho jaata hai pointer me. Yeh samajhna zaroori hai!
+    </p>
+
+    <h3>Teen Tarah se Likh Sakte Ho — Sab Same Hai</h3>
+    <div class="code-wrap"><pre><code>void printArray(int arr[], int size);      /* sabse readable */
+void printArray(int *arr, int size);       /* pointer se */
+void printArray(int arr[100], int size);   /* size IGNORE ho jaata hai */</code></pre></div>
+
+    <h3 style="margin-top:22px">Working Example</h3>
+    <div class="code-wrap"><pre><code>#include &lt;stdio.h&gt;
+
+void printArray(int arr[], int size) {
+    for (int i = 0; i &lt; size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int marks[5] = {10, 20, 30, 40, 50};
+    printArray(marks, 5);   /* array ka naam = pointer */
+    return 0;
+}</code></pre></div>
+
+    <div class="note dang">
+      <span class="ico">⛔</span>
+      <div><b>Bahut important:</b> Array ka size <b>apne aap nahi</b> jaata function me.
+      Tumhe alag se <code>size</code> bhejna padta hai. Aur C me <b>koi range checking
+      nahi</b> hoti — <code>arr[10]</code> likhna 5-element array me <b>undefined behavior</b>
+      hai, program crash ho sakta hai!</div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h3>🔬 Kyun Size Zaroori Hai — Trap Dekho</h3>
+      <div class="code-wrap"><pre><code>void broken(int arr[]) {
+    /* sizeof(arr) = 8 bytes (pointer ka size)
+       array ka size NAHI! */
+    int n = sizeof(arr) / sizeof(arr[0]);   /* ❌ GALAT */
+    printf("%d\n", n);
+}
+
+int main(void) {
+    int marks[100];
+    broken(marks);   /* 2 ya 1 print karega — bilkul galat! */
+    return 0;
+}</code></pre></div>
+      <p class="sub" style="margin-top:10px">
+        Function ke andar <code>arr</code> sirf ek pointer hai. <code>sizeof</code>
+        pointer ka size deta hai, array ka nahi. <b>Hamesha <code>size</code> alag se bhejo.</b>
+      </p>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 15 : UTILITY FUNCTIONS ===== -->
+<section class="slide" data-title="Useful Functions">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 14</div>
+      <h2>Kaam ke <span class="grad">Array Functions</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Yeh chaar functions har jagah kaam aate hain. Inhe ek baar likh lo, hamesha use karo.
+    </p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>🔺 Maximum Nikalo</h3>
+        <div class="code-wrap"><pre><code>int arrayMax(int arr[], int size) {
+    int max = arr[0];
+    for (int i = 1; i &lt; size; i++)
+        if (arr[i] &gt; max)
+            max = arr[i];
+    return max;
+}</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>🔻 Minimum Nikalo</h3>
+        <div class="code-wrap"><pre><code>int arrayMin(int arr[], int size) {
+    int min = arr[0];
+    for (int i = 1; i &lt; size; i++)
+        if (arr[i] &lt; min)
+            min = arr[i];
+    return min;
+}</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>➕ Sum Nikalo</h3>
+        <div class="code-wrap"><pre><code>int arraySum(int arr[], int size) {
+    int sum = 0;
+    for (int i = 0; i &lt; size; i++)
+        sum += arr[i];
+    return sum;
+}</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>📊 Average Nikalo</h3>
+        <div class="code-wrap"><pre><code>double arrayAverage(int arr[], int size) {
+    return (double)arraySum(arr, size) / size;
+}
+/* (double) cast ZAROORI hai —
+   warna integer division ho jaayega */</code></pre></div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Yeh Functions Try Karo</div>
+      <div class="array-viz" id="viz7"></div>
+      <div class="info-panel">
+        <div class="info-box"><span class="k">Max</span><span class="v" id="uMax">—</span></div>
+        <div class="info-box"><span class="k">Min</span><span class="v" id="uMin">—</span></div>
+        <div class="info-box"><span class="k">Sum</span><span class="v" id="uSum">—</span></div>
+        <div class="info-box"><span class="k">Average</span><span class="v" id="uAvg">—</span></div>
+      </div>
+      <div class="controls-row" style="margin-top:14px;margin-bottom:0">
+        <button class="btn gh" id="uShuffle">🎲 Naye Numbers Do</button>
+      </div>
+    </div>
+
+    <div class="real-box">
+      <span class="emoji">🩸</span>
+      <div class="txt">
+        <b>Biology use case:</b> Blood test ke 30 din ke readings ka
+        <b>max</b> (worst day), <b>min</b> (best day), aur <b>average</b> — yeh
+        teeno functions se turant mil jaate hain!
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 16 : 2D ARRAYS ===== -->
+<section class="slide" data-title="2D Arrays">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 15</div>
+      <h2>2D Array — <span class="grad">Table Jaisa Array</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Ek simple array ek <b>line</b> hai. Do-dimensional (2D) array ek
+      <b>table</b> hai — rows aur columns ke saath. Jaise Excel sheet ya class ki
+      seating arrangement!
+    </p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>2D Array Banana aur Use Karna</h3>
+        <div class="code-wrap"><pre><code>int marks[3][3] = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+/* row 1, column 2 ka element */
+printf("%d\n", marks[1][2]);  /* 6 */
+
+/* poora traverse karo */
+for (int i = 0; i &lt; 3; i++) {
+    for (int j = 0; j &lt; 3; j++) {
+        printf("%4d", marks[i][j]);
+    }
+    printf("\n");
+}</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>Memory Me Kaise Store Hota Hai?</h3>
+        <p class="sub" style="margin-bottom:12px">
+          Dono compilers me <b>row-major</b> order hota hai — pehle row 0, phir row 1...
+        </p>
+        <div class="array-viz" id="viz8" style="gap:5px"></div>
+        <p class="sub" style="text-align:center;margin-top:12px;font-size:12px;color:#7c8ba3">
+          <code>marks[3][3]</code> ka flat view — 9 contiguous int
+        </p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:26px">Address Formula</h3>
+    <div class="note tip">
+      <span class="ico">💡</span>
+      <div>
+        2D array <code>T a[R][C]</code> me, element <code>a[i][j]</code> ka address:<br><br>
+        <code style="font-size:14px">addr = base + (i * C + j) * sizeof(T)</code><br><br>
+        Jaise <code>int marks[3][3]</code> me <code>marks[1][2]</code> —
+        <code>base + (1*3 + 2) * 4 = base + 20</code> bytes (GCC me).
+      </div>
+    </div>
+
+    <div class="real-box">
+      <span class="emoji">📋</span>
+      <div class="txt">
+        <b>Biology example:</b> Class ki attendance — <b>40 students × 30 days</b> ka
+        record. <code>att[student][day]</code> se ek student ke ek din ka attendance
+        turant mil jaata hai. Yeh 2D array hai!
+      </div>
+    </div>
+
+    <div class="note warn">
+      <span class="ico">⚠️</span>
+      <div><b>Turbo C me dhyan se:</b> <code>int big[200][200]</code> =
+      200 × 200 × 2 = <b>80,000 bytes</b> — 64 KB limit se bada hai,
+      <b>compile hi nahi hoga</b>. GCC me sirf 160,000 bytes hai, chal jaayega.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 17 : STRINGS ===== -->
+<section class="slide" data-title="Strings — char Arrays">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 16</div>
+      <h2>Strings — <span class="grad">Characters ka Array</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      C me alag se "string" type nahi hota. String bas ek <b>char array</b> hota hai
+      jiske end me ek <b>null character</b> <code>'\0'</code> lagaya jaata hai. Bas!
+    </p>
+
+    <div class="card">
+      <div class="array-viz" id="viz9"></div>
+      <p class="sub" style="text-align:center;margin-top:12px;font-size:12.5px">
+        <code>char name[20] = "Hello";</code> — dekho index 5 pe chhupa hua <code>'\0'</code>
+      </p>
+    </div>
+
+    <h3 style="margin-top:24px"><code>&lt;string.h&gt;</code> ka Toolkit</h3>
+    <div class="code-wrap"><pre><code>#include &lt;string.h&gt;
+
+char name[20] = "Hello";
+
+strlen(name);            /* 5  — length, '\0' chhod ke */
+strcpy(dest, name);      /* copy karo */
+strcat(name, " World");  /* jodo -> "Hello World" */
+strcmp(s1, s2);          /* compare: 0 agar equal */
+strchr(name, 'e');       /* 'e' pehli baar kahan hai */
+strstr(name, "ell");     /* "ell" substring kahan hai */</code></pre></div>
+
+    <table class="tbl">
+      <thead><tr><th style="width:26%">Function</th><th style="width:40%">Kya karta hai</th><th>Kya return karta hai</th></tr></thead>
+      <tbody>
+        <tr><td><code>strlen(s)</code></td><td>String ki length</td><td><code>size_t</code></td></tr>
+        <tr><td><code>strcpy(d, s)</code></td><td><code>s</code> ko <code>d</code> me copy</td><td><code>d</code></td></tr>
+        <tr><td><code>strcat(d, s)</code></td><td><code>s</code> ko <code>d</code> ke aage jodo</td><td><code>d</code></td></tr>
+        <tr><td><code>strcmp(s1, s2)</code></td><td>Do strings compare karo</td><td><code>&lt;0</code>, <code>0</code>, <code>&gt;0</code></td></tr>
+        <tr><td><code>strchr(s, c)</code></td><td>Pehla <code>c</code> dhoondho</td><td>Pointer ya <code>NULL</code></td></tr>
+        <tr><td><code>strstr(s, sub)</code></td><td>Substring dhoondho</td><td>Pointer ya <code>NULL</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="real-box">
+      <span class="emoji">🧬</span>
+      <div class="txt">
+        <b>Biology use:</b> DNA sequence <code>char dna[100] = "ATGCATGCAT"</code> —
+        <code>strlen(dna)</code> se sequence length, <code>strstr(dna, "ATGC")</code> se
+        koi specific motif dhoondh sakte ho. String functions bioinformatics me bahut kaam aate hain!
+      </div>
+    </div>
+
+    <div class="note dang">
+      <span class="ico">⛔</span>
+      <div><b>Hamesha <code>size + 1</code> allocate karo.</b> 5-character string ke liye
+      <code>char s[6]</code> chahiye — kyunki <code>'\0'</code> ke liye bhi ek jagah chahiye.
+      Bhoolne se <b>buffer overflow</b> hota hai, jo C ke sabse bade security bugs ki jaddh hai.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 18 : CHEAT SHEET ===== -->
+<section class="slide" data-title="Cheat Sheet">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 17</div>
+      <h2>Ekdum <span class="grad">Cheat Sheet</span></h2>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>📐 Syntax Yaad Rakhne Wali</h3>
+        <div class="kv"><span class="k">Declare</span><span class="v">type name[size];</span></div>
+        <div class="kv"><span class="k">Access</span><span class="v">name[index]</span></div>
+        <div class="kv"><span class="k">Pehla index</span><span class="v">0</span></div>
+        <div class="kv"><span class="k">Aakhri index</span><span class="v">size - 1</span></div>
+        <div class="kv"><span class="k">Element count</span><span class="v">sizeof(a)/sizeof(a[0])</span></div>
+        <div class="kv"><span class="k">Function me bhejo</span><span class="v">func(arr, size)</span></div>
+        <div class="kv"><span class="k">Dynamic alloc</span><span class="v">malloc(n * sizeof(T))</span></div>
+      </div>
+
+      <div class="card">
+        <h3>⏱️ Speed (Complexity) Chart</h3>
+        <div class="kv"><span class="k">Index se access</span><span class="v" style="color:#4ade80">O(1)</span></div>
+        <div class="kv"><span class="k">Traversal (pura ghoomna)</span><span class="v" style="color:#fbbf24">O(n)</span></div>
+        <div class="kv"><span class="k">Linear search</span><span class="v" style="color:#fbbf24">O(n)</span></div>
+        <div class="kv"><span class="k">Binary search</span><span class="v" style="color:#4ade80">O(log n)</span></div>
+        <div class="kv"><span class="k">Insert / Delete</span><span class="v" style="color:#fbbf24">O(n)</span></div>
+        <div class="kv"><span class="k">qsort()</span><span class="v" style="color:#fbbf24">O(n log n)</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>⚖️ Turbo C vs GCC — Ek Nazar Me</h3>
+      <table class="tbl" style="margin:0">
+        <thead><tr><th>Feature</th><th>Turbo C</th><th>GCC</th></tr></thead>
+        <tbody>
+          <tr><td>VLA (variable size array)</td><td class="no">✗</td><td class="ok">✓</td></tr>
+          <tr><td>Max object size</td><td class="no">64 KB</td><td class="ok">RAM ke hisaab se</td></tr>
+          <tr><td>Designated initializers</td><td class="no">✗</td><td class="ok">✓</td></tr>
+          <tr><td><code>//</code> comments</td><td class="no">✗</td><td class="ok">✓</td></tr>
+          <tr><td><code>conio.h</code></td><td class="ok">✓</td><td class="no">✗</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>🎯 Golden Rules — Yaad Rakho</h3>
+      <ul class="clean" style="margin-top:6px">
+        <li>Index <b>0 se size-1</b> tak. Ek kam ya zyada mat karo.</li>
+        <li>Function me <b>size hamesha alag se</b> bhejo — woh saath nahi jaata.</li>
+        <li><b>Bounds ke bahar</b> access mat karo. C rokti nahi — OS rokti hai (crash).</li>
+        <li>String ke liye <b>size + 1</b> bytes rakho (<code>'\0'</code> ke liye).</li>
+        <li>Bade arrays ke liye <b><code>malloc()</code></b> use karo — khaas kar Turbo C me.</li>
+        <li>Har <code>malloc()</code> ka ek <code>free()</code> hona chahiye.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 19 : PROJECT ===== -->
+<section class="slide" data-title="Complete Project Code">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 18 · Project</div>
+      <h2>Poora <span class="grad">Working Project</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:16px">
+      Yeh ek menu-driven program hai jo <b>sab kuch</b> ek jagah dikhata hai —
+      display, max, min, search, reverse, sort. Turbo C aur GCC dono me chalega.
+    </p>
+
+    <div class="code-wrap"><pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/* ---------- Function declarations ---------- */
+void display(int arr[], int n);
+int  findMax(int arr[], int n);
+int  findMin(int arr[], int n);
+int  linearSearch(int arr[], int n, int key);
+void reverse(int arr[], int n);
+int  compare(const void *a, const void *b);
+
+/* ---------- Main ---------- */
+int main(void) {
+    int marks[100];
+    int n, choice, key, pos;
+
+    printf("=== ARRAY OPERATIONS DEMO ===\n");
+    printf("Kitne students ke marks? ");
+    scanf("%d", &amp;n);
+
+    printf("Ab %d marks daalo:\n", n);
+    for (int i = 0; i &lt; n; i++)
+        scanf("%d", &amp;marks[i]);
+
+    do {
+        printf("\n--- MENU ---\n");
+        printf("1. Display\n");
+        printf("2. Max Dhundo\n");
+        printf("3. Min Dhundo\n");
+        printf("4. Search\n");
+        printf("5. Reverse\n");
+        printf("6. Sort\n");
+        printf("7. Exit\n");
+        printf("Choice: ");
+        scanf("%d", &amp;choice);
+
+        switch (choice) {
+            case 1:
+                display(marks, n);
+                break;
+
+            case 2:
+                printf("Max = %d\n", findMax(marks, n));
+                break;
+
+            case 3:
+                printf("Min = %d\n", findMin(marks, n));
+                break;
+
+            case 4:
+                printf("Key daalo: ");
+                scanf("%d", &amp;key);
+                pos = linearSearch(marks, n, key);
+                if (pos != -1)
+                    printf("Mila! Index %d pe\n", pos);
+                else
+                    printf("Nahi mila\n");
+                break;
+
+            case 5:
+                reverse(marks, n);
+                printf("Reverse ho gaya!\n");
+                break;
+
+            case 6:
+                qsort(marks, n, sizeof(int), compare);
+                printf("Sort ho gaya!\n");
+                break;
+
+            case 7:
+                printf("Bye!\n");
+                break;
+
+            default:
+                printf("Galat choice!\n");
+        }
+    } while (choice != 7);
+
+    return 0;
+}
+
+/* ---------- Function implementations ---------- */
+
+void display(int arr[], int n) {
+    printf("Array: ");
+    for (int i = 0; i &lt; n; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+}
+
+int findMax(int arr[], int n) {
+    int max = arr[0];
+    for (int i = 1; i &lt; n; i++)
+        if (arr[i] &gt; max)
+            max = arr[i];
+    return max;
+}
+
+int findMin(int arr[], int n) {
+    int min = arr[0];
+    for (int i = 1; i &lt; n; i++)
+        if (arr[i] &lt; min)
+            min = arr[i];
+    return min;
+}
+
+int linearSearch(int arr[], int n, int key) {
+    for (int i = 0; i &lt; n; i++)
+        if (arr[i] == key)
+            return i;
+    return -1;
+}
+
+void reverse(int arr[], int n) {
+    for (int i = 0; i &lt; n / 2; i++) {
+        int temp = arr[i];
+        arr[i] = arr[n - 1 - i];
+        arr[n - 1 - i] = temp;
+    }
+}
+
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}</code></pre></div>
+
+    <div class="grid2" style="margin-top:18px">
+      <div class="card">
+        <h3><span class="badge gc">🟢 GCC</span> Compile kaise karein</h3>
+        <div class="code-wrap"><pre><code>gcc -o marks_demo marks_demo.c
+./marks_demo</code></pre></div>
+      </div>
+      <div class="card">
+        <h3><span class="badge tc">🔴 Turbo C</span> Compile kaise karein</h3>
+        <div class="code-wrap"><pre><code>tcc marks_demo.c
+marks_demo.exe</code></pre></div>
+      </div>
+    </div>
+
+    <div class="note warn">
+      <span class="ico">⚠️</span>
+      <div><b>Turbo C warning:</b> <code>for (int i = 0; ...)</code> — C99 ka feature hai.
+      Turbo C reject kar sakta hai. Agar error aaye toh <code>int i;</code> function ke
+      top pe declare karo, phir <code>for (i = 0; ...)</code> likho.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 20 : PITFALLS ===== -->
+<section class="slide" data-title="Common Galtiyan">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 19</div>
+      <h2>Common <span class="grad">Galtiyan</span> aur Unka Hal</h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:16px">
+      Yeh woh galtiyan hain jo <b>har beginner</b> karta hai. Pehle se jaan lo, aage
+      time bachega!
+    </p>
+
+    <table class="tbl">
+      <thead><tr><th style="width:38%">⚠️ Galti</th><th>✅ Sahi Tareeka</th></tr></thead>
+      <tbody>
+        <tr><td><b>Off-by-one error</b></td><td>Index <code>0</code> se <code>n-1</code> tak jaata hai. Loop <code>i &lt; n</code> likho, <code>i &lt;= n</code> nahi.</td></tr>
+        <tr><td><b>Bounds ke bahar access</b></td><td>Hamesha <code>i &lt; n</code> check karo. C koi rok nahi lagati — undefined behavior hai.</td></tr>
+        <tr><td><b>String me <code>'\0'</code> bhoolna</b></td><td><code>size + 1</code> bytes lo char array ke liye.</td></tr>
+        <tr><td><b>Size function me na bhejna</b></td><td>Size hamesha alag se bhejo — <code>sizeof</code> function me pointer ka size deta hai.</td></tr>
+        <tr><td><b>Uninitialized array use karna</b></td><td>Pehle initialize karo: <code>int a[10] = {0};</code></td></tr>
+        <tr><td><b>Turbo C ki 64 KB limit</b></td><td>Bade arrays ke liye <code>malloc()</code> use karo.</td></tr>
+        <tr><td><b>VLA Turbo C me likhna</b></td><td><code>malloc()</code> use karo runtime size ke liye.</td></tr>
+        <tr><td><b>memset int array pe</b></td><td>Loop use karo — <code>memset</code> bytes set karta hai, elements nahi.</td></tr>
+        <tr><td><b>Integer division in average</b></td><td>Cast karo: <code>(double)sum / n</code></td></tr>
+        <tr><td><b>Memory leak</b></td><td>Har <code>malloc()</code> ka <code>free()</code> hona chahiye.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note ok">
+      <span class="ico">✅</span>
+      <div><b>Achhi aadat:</b> warnings on karke compile karo.
+      <code>gcc -Wall -Wextra -pedantic code.c</code> — 90% galtiyan program chalne
+      se pehle hi pakad lega.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 21 : QUIZ ===== -->
+<section class="slide" data-title="Quiz — Khud Ko Test Karo">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 20 · Test Yourself</div>
+      <h2>Quick <span class="grad">Quiz</span> — 6 Sawaal</h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:22px">Kisi bhi option pe click karo — turant pata chal jaayega sahi ya galat.</p>
+
+    <div id="quiz"></div>
+
+    <div class="note tip" style="margin-top:24px">
+      <span class="ico">🎯</span>
+      <div>Score: <b id="quizScore" style="color:#38e1ff">0</b> / <b>6</b> —
+      <span id="quizMsg">saare sawaal answer karo result dekhne ke liye.</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 22 : SUMMARY ===== -->
+<section class="slide" data-title="Wrap Up">
+  <div class="wrap center">
+    <div class="pill">Chapter 21 · Aakhri Baat</div>
+    <h1><span class="grad">Badhai Ho! 🎉</span><br>Tumne Arrays Seekh Liye</h1>
+    <p class="lead" style="margin-top:18px">
+      Zero se Hero tak — declaration se lekar dynamic allocation tak, Turbo C ki
+      limits se GCC ke modern features tak. Ab tum **array expert** ho!
+    </p>
+
+    <div class="grid4" style="margin-top:38px;width:100%;max-width:920px">
+      <div class="card" style="text-align:center;padding:16px">
+        <div style="font-size:26px;margin-bottom:6px">📐</div>
+        <div style="font-size:12.5px;color:#8b9ab3">Declaration</div>
+        <div style="font-size:12.5px;font-family:'JetBrains Mono',monospace;color:#38e1ff;margin-top:4px">type name[size]</div>
+      </div>
+      <div class="card" style="text-align:center;padding:16px">
+        <div style="font-size:26px;margin-bottom:6px">🔍</div>
+        <div style="font-size:12.5px;color:#8b9ab3">Searching</div>
+        <div style="font-size:12.5px;font-family:'JetBrains Mono',monospace;color:#a78bfa;margin-top:4px">Linear / Binary</div>
+      </div>
+      <div class="card" style="text-align:center;padding:16px">
+        <div style="font-size:26px;margin-bottom:6px">⚡</div>
+        <div style="font-size:12.5px;color:#8b9ab3">Sorting</div>
+        <div style="font-size:12.5px;font-family:'JetBrains Mono',monospace;color:#f472b6;margin-top:4px">qsort()</div>
+      </div>
+      <div class="card" style="text-align:center;padding:16px">
+        <div style="font-size:26px;margin-bottom:6px">⚖️</div>
+        <div style="font-size:12.5px;color:#8b9ab3">Portability</div>
+        <div style="font-size:12.5px;font-family:'JetBrains Mono',monospace;color:#4ade80;margin-top:4px">Turbo C ↔ GCC</div>
+      </div>
+    </div>
+
+    <div class="note bio" style="max-width:760px;margin-top:34px;text-align:left">
+      <span class="ico">🚀</span>
+      <div><b>Aage ka rasta:</b> Arrays har data structure ki neev hain. Inhe master kar liya,
+      toh <b>linked list, stack, queue, tree, graph</b> — sab easy lagega. Aur
+      biology me bioinformatics (DNA analysis, protein structure) me yahi cheezein kaam aati hain!</div>
+    </div>
+
+    <div class="note tip" style="max-width:760px;margin-top:14px;text-align:left">
+      <span class="ico">💡</span>
+      <div><b>Practice tip:</b> Roz 2-3 chhote programs likho — marks ka average, DNA
+      reverse, student rank. 2 hafte me tum expert ban jaoge!</div>
+    </div>
+
+    <p class="sub" style="margin-top:34px;font-size:12.5px;letter-spacing:.1em">
+      <b style="color:#38e1ff">←</b> REVIEW KARNE KE LIYE &nbsp;·&nbsp; <b style="color:#38e1ff">☰</b> CONTENTS KE LIYE
+    </p>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER CONTROLS ============ -->
+<div class="controls">
+  <button class="nav-btn" id="prevBtn">← Peeche</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn">Aage →</button>
+</div>
+
+<script>
+/* ================================================================
+   1. C SYNTAX HIGHLIGHTER
+   ================================================================ */
+(function(){
+  const KW = 'auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|int|long|register|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while|NULL|size_t';
+  const RE = new RegExp(
+    '(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)' +
+    '|("(?:\\\\.|[^"\\\\])*"|\'(?:\\\\.|[^\'\\\\])*\')' +
+    '|(#\\s*\\w+)' +
+    '|(&lt;[A-Za-z0-9_\\/.]+\\.h&gt;)' +
+    '|\\b(' + KW + ')\\b' +
+    '|\\b(\\d+(?:\\.\\d+)?)\\b',
+    'g'
+  );
+
+  document.querySelectorAll('pre code').forEach(function(el){
+    const raw = el.innerHTML;
+    el.innerHTML = raw.replace(RE, function(m, com, str, pre, hdr, kw, num){
+      if (com) return '<span class="tk-com">' + m + '</span>';
+      if (str) return '<span class="tk-str">' + m + '</span>';
+      if (pre) return '<span class="tk-pre">' + m + '</span>';
+      if (hdr) return '<span class="tk-str">' + m + '</span>';
+      if (kw)  return '<span class="tk-kw">'  + m + '</span>';
+      if (num) return '<span class="tk-num">' + m + '</span>';
+      return m;
+    });
+  });
+
+  document.querySelectorAll('pre').forEach(function(pre){
+    const wrap = document.createElement('div');
+    wrap.className = 'code-wrap';
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.onclick = function(){
+      navigator.clipboard.writeText(pre.innerText).then(function(){
+        btn.textContent = 'Copied ✓';
+        setTimeout(function(){ btn.textContent = 'Copy'; }, 1400);
+      }).catch(function(){ btn.textContent = 'Failed'; });
+    };
+    wrap.appendChild(btn);
+  });
+})();
+
+/* ================================================================
+   2. SLIDE ENGINE
+   ================================================================ */
+const slides   = Array.from(document.querySelectorAll('.slide'));
+const dotsEl   = document.getElementById('dots');
+const tocList  = document.getElementById('tocList');
+const curEl    = document.getElementById('cur');
+const totalEl  = document.getElementById('total');
+const barEl    = document.getElementById('progressBar');
+let   idx      = 0;
+
+totalEl.textContent = slides.length;
+
+slides.forEach(function(s, i){
+  const d = document.createElement('button');
+  d.className = 'dot';
+  d.title = s.dataset.title;
+  d.onclick = function(){ go(i); };
+  dotsEl.appendChild(d);
+
+  const t = document.createElement('button');
+  t.className = 'toc-item';
+  t.innerHTML = '<span class="num">' + String(i+1).padStart(2,'0') + '</span>' + s.dataset.title;
+  t.onclick = function(){ go(i); closeToc(); };
+  tocList.appendChild(t);
+});
+
+const dots = Array.from(dotsEl.children);
+const tocs = Array.from(tocList.children);
+
+function go(n){
+  n = Math.max(0, Math.min(slides.length - 1, n));
+  if (n === idx && slides[n].classList.contains('active')) return;
+
+  slides[idx].classList.remove('active');
+  dots[idx].classList.remove('on');
+  tocs[idx].classList.remove('on');
+
+  idx = n;
+
+  slides[idx].classList.add('active');
+  slides[idx].scrollTop = 0;
+  dots[idx].classList.add('on');
+  tocs[idx].classList.add('on');
+
+  curEl.textContent = idx + 1;
+  barEl.style.width = ((idx) / (slides.length - 1) * 100) + '%';
+
+  document.getElementById('prevBtn').disabled = (idx === 0);
+  document.getElementById('nextBtn').disabled = (idx === slides.length - 1);
+}
+
+document.getElementById('prevBtn').onclick = function(){ go(idx - 1); };
+document.getElementById('nextBtn').onclick = function(){ go(idx + 1); };
+
+document.addEventListener('keydown', function(e){
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(idx + 1); }
+  if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                    { e.preventDefault(); go(idx - 1); }
+  if (e.key === 'Home') { e.preventDefault(); go(0); }
+  if (e.key === 'End')  { e.preventDefault(); go(slides.length - 1); }
+  if (e.key === 'Escape') closeToc();
+});
+
+let touchX = 0, touchY = 0;
+document.addEventListener('touchstart', function(e){
+  touchX = e.changedTouches[0].clientX;
+  touchY = e.changedTouches[0].clientY;
+}, {passive:true});
+document.addEventListener('touchend', function(e){
+  const dx = e.changedTouches[0].clientX - touchX;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+    go(dx < 0 ? idx + 1 : idx - 1);
+  }
+}, {passive:true});
+
+const tocEl    = document.getElementById('toc');
+const backdrop = document.getElementById('backdrop');
+function openToc(){ tocEl.classList.add('open'); backdrop.classList.add('on'); }
+function closeToc(){ tocEl.classList.remove('open'); backdrop.classList.remove('on'); }
+document.getElementById('menuBtn').onclick = openToc;
+document.getElementById('closeToc').onclick = closeToc;
+backdrop.onclick = closeToc;
+
+go(0);
+barEl.style.width = '0%';
+
+/* ================================================================
+   3. DEMO — ARRAY EXPLORER (Slide 2)
+   ================================================================ */
+(function(){
+  const data = [85, 92, 78, 95, 88];
+  const BASE = 1000;
+  let bytes = 4;
+  const viz = document.getElementById('viz1');
+
+  function render(){
+    viz.innerHTML = '';
+    data.forEach(function(v, i){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val">' + v + '</div>';
+      c.onclick = function(){ select(i, c); };
+      viz.appendChild(c);
+    });
+  }
+
+  function select(i, el){
+    Array.from(viz.children).forEach(function(c){ c.classList.remove('hl'); });
+    el.classList.add('hl');
+    document.getElementById('v1i').textContent = '[' + i + ']';
+    document.getElementById('v1v').textContent = data[i];
+    document.getElementById('v1a').textContent = BASE + (i * bytes);
+    document.getElementById('v1b').textContent = bytes;
+    document.getElementById('v1log').innerHTML =
+      'arr[' + i + '] = <b>' + data[i] + '</b> &nbsp;·&nbsp; address = base + ' +
+      i + ' × ' + bytes + ' = <b>' + (BASE + i * bytes) + '</b>';
+  }
+
+  document.querySelectorAll('#archSwitch button').forEach(function(b){
+    b.onclick = function(){
+      document.querySelectorAll('#archSwitch button').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      bytes = parseInt(b.dataset.bytes, 10);
+      document.getElementById('v1log').innerHTML =
+        'Ab <b>' + (bytes === 4 ? 'GCC (int = 4 bytes)' : 'Turbo C (int = 2 bytes)') + '</b> mode me ho.';
+    };
+  });
+
+  render();
+})();
+
+/* ================================================================
+   4. DEMO — STATIC ARRAY SNAPSHOT (Slide 4)
+   ================================================================ */
+(function(){
+  const data = [85, 92, 78, 95, 88];
+  const viz = document.getElementById('viz2');
+  data.forEach(function(v, i){
+    const c = document.createElement('div');
+    c.className = 'cell';
+    c.style.width = '54px';
+    c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                  '<div class="cell-val" style="font-size:15px;padding:10px 0">' + v + '</div>';
+    viz.appendChild(c);
+  });
+})();
+
+/* ================================================================
+   5. DEMO — SIZE CALCULATOR (Slide 7)
+   ================================================================ */
+(function(){
+  function calc(){
+    const n = Math.max(1, parseInt(document.getElementById('sizeInput').value, 10) || 0);
+    const tc = n * 2, gc = n * 4;
+    document.getElementById('szTC').textContent = tc.toLocaleString() + ' B';
+    document.getElementById('szGC').textContent = gc.toLocaleString() + ' B';
+
+    const v = document.getElementById('szVerdict');
+    const log = document.getElementById('szLog');
+
+    if (tc > 65536) {
+      v.textContent = '❌ TC fail';
+      v.style.color = '#fb7185';
+      log.innerHTML = 'Turbo C ko <b>' + tc.toLocaleString() + ' bytes</b> chahiye, par limit ' +
+                      '<b>65,536 bytes</b> hai. <code>malloc()</code> use karo. GCC chal jaayega.';
+    } else {
+      v.textContent = '✅ Dono OK';
+      v.style.color = '#4ade80';
+      log.innerHTML = 'Turbo C ko <b>' + tc.toLocaleString() + ' bytes</b> chahiye — 64 KB me fit. ' +
+                      'GCC ko <b>' + gc.toLocaleString() + ' bytes</b>.';
+    }
+  }
+  document.getElementById('sizeCalc').onclick = calc;
+  document.getElementById('sizeInput').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') calc();
+  });
+  calc();
+})();
+
+/* ================================================================
+   6. DEMO — TRAVERSAL (Slide 9)
+   ================================================================ */
+(function(){
+  const data = [10, 20, 30, 40, 50];
+  const viz = document.getElementById('viz3');
+  const log = document.getElementById('trLog');
+  let timer = null;
+
+  function build(){
+    viz.innerHTML = '';
+    data.forEach(function(v, i){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val">' + v + '</div>';
+      viz.appendChild(c);
+    });
+  }
+
+  function clear(){
+    if (timer) { clearTimeout(timer); timer = null; }
+    Array.from(viz.children).forEach(function(c){ c.className = 'cell'; });
+  }
+
+  function run(order, label){
+    clear();
+    const cells = Array.from(viz.children);
+    let k = 0;
+    (function step(){
+      if (k > 0) cells[order[k-1]].classList.remove('hl');
+      if (k >= order.length) {
+        log.innerHTML = '<b>' + label + '</b> complete — <b>' + order.length + '</b> elements dekhe.';
+        timer = null;
+        return;
+      }
+      const i = order[k];
+      cells[i].classList.add('hl');
+      log.innerHTML = label + ' → i = <b>' + i + '</b> &nbsp;·&nbsp; arr[' + i + '] = <b>' + data[i] + '</b>';
+      k++;
+      timer = setTimeout(step, 480);
+    })();
+  }
+
+  document.getElementById('trFwd').onclick = function(){ run([0,1,2,3,4], 'Forward loop'); };
+  document.getElementById('trBwd').onclick = function(){ run([4,3,2,1,0], 'Backward loop'); };
+  document.getElementById('trReset').onclick = function(){
+    clear();
+    log.textContent = 'Reset. Button dabao aur loop chalte hue dekho.';
+  };
+
+  build();
+})();
+
+/* ================================================================
+   7. DEMO — INSERT / DELETE (Slide 10)
+   ================================================================ */
+(function(){
+  const CAP = 12;
+  const INIT = [10, 20, 30, 40, 50];
+  let arr = INIT.slice();
+  const viz = document.getElementById('viz4');
+  const log = document.getElementById('insLog');
+
+  function render(hlIndex, hlClass){
+    viz.innerHTML = '';
+    for (let i = 0; i < CAP; i++){
+      const c = document.createElement('div');
+      const has = i < arr.length;
+      c.className = 'cell' + (has ? '' : ' empty');
+      if (i === hlIndex && has) c.classList.add(hlClass || 'hl');
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val">' + (has ? arr[i] : '·') + '</div>';
+      c.style.width = '58px';
+      viz.appendChild(c);
+    }
+    document.getElementById('insLen').textContent = arr.length;
+    document.getElementById('insCap').textContent = CAP;
+  }
+
+  document.getElementById('doInsert').onclick = function(){
+    const pos = parseInt(document.getElementById('insPos').value, 10);
+    const val = parseInt(document.getElementById('insVal').value, 10);
+    if (isNaN(pos) || isNaN(val)) { log.textContent = '⚠️ Position aur value sahi daalo.'; return; }
+    if (pos < 0 || pos > arr.length) { log.textContent = '⚠️ Galat position: ' + pos; return; }
+    if (arr.length >= CAP) { log.textContent = '⚠️ Array full hai.'; return; }
+
+    arr.splice(pos, 0, val);
+    render(pos, 'hl');
+    log.innerHTML = '<b>' + val + '</b> index <b>' + pos + '</b> pe insert hua — ' +
+                    (arr.length - pos - 1) + ' elements right shift hue. Length = <b>' + arr.length + '</b>.';
+  };
+
+  document.getElementById('doDelete').onclick = function(){
+    const pos = parseInt(document.getElementById('delPos').value, 10);
+    if (isNaN(pos)) { log.textContent = '⚠️ Position daalo.'; return; }
+    if (pos < 0 || pos >= arr.length) { log.textContent = '⚠️ Galat position: ' + pos; return; }
+    if (arr.length === 0) { log.textContent = '⚠️ Array khaali hai.'; return; }
+
+    const removed = arr[pos];
+    arr.splice(pos, 1);
+    render(-1);
+    log.innerHTML = '<b>' + removed + '</b> index <b>' + pos + '</b> se delete hua — ' +
+                    'baaki elements left shift hue. Length = <b>' + arr.length + '</b>.';
+  };
+
+  document.getElementById('doResetIns').onclick = function(){
+    arr = INIT.slice();
+    render(-1);
+    log.textContent = 'Wapas 5 elements pe reset.';
+  };
+
+  render(-1);
+})();
+
+/* ================================================================
+   8. DEMO — SEARCH (Slide 11)
+   ================================================================ */
+(function(){
+  const data = [5, 12, 19, 27, 33, 41, 58, 66, 74, 89];
+  const viz  = document.getElementById('viz5');
+  const log  = document.getElementById('searchLog');
+  let busy = false;
+
+  function build(){
+    viz.innerHTML = '';
+    data.forEach(function(v, i){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.style.width = '60px';
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val" style="font-size:15px">' + v + '</div>';
+      viz.appendChild(c);
+    });
+  }
+  const cells = function(){ return Array.from(viz.children); };
+
+  function clear(){
+    cells().forEach(function(c){ c.className = 'cell'; });
+  }
+
+  function getKey(){
+    const k = parseInt(document.getElementById('searchKey').value, 10);
+    if (isNaN(k)) { log.textContent = '⚠️ Number daalo.'; return null; }
+    return k;
+  }
+
+  document.getElementById('runLinear').onclick = function(){
+    if (busy) return;
+    const key = getKey(); if (key === null) return;
+    busy = true; clear();
+    const cs = cells();
+    let i = 0;
+    (function step(){
+      if (i >= data.length){
+        log.innerHTML = '🔍 Linear: key <b>' + key + '</b> nahi mili — <b>' + data.length + '</b> comparisons.';
+        busy = false; return;
+      }
+      cs.forEach(function(c){ c.classList.remove('hl'); });
+      cs[i].classList.add('hl');
+      if (data[i] === key){
+        cs[i].classList.remove('hl');
+        cs[i].classList.add('done');
+        log.innerHTML = '🔍 Linear: <b>' + key + '</b> mili index <b>' + i +
+                        '</b> pe, sirf <b>' + (i + 1) + '</b> comparison ke baad!';
+        busy = false; return;
+      }
+      log.innerHTML = '🔍 Linear: index <b>' + i + '</b> check kar raha hoon → ' + data[i] + ' ≠ ' + key;
+      i++;
+      setTimeout(step, 320);
+    })();
+  };
+
+  document.getElementById('runBinary').onclick = function(){
+    if (busy) return;
+    const key = getKey(); if (key === null) return;
+    busy = true; clear();
+    const cs = cells();
+    let low = 0, high = data.length - 1, steps = 0;
+
+    (function step(){
+      cs.forEach(function(c){ c.classList.remove('low','high','mid','hl'); });
+
+      if (low > high){
+        log.innerHTML = '⚡ Binary: key <b>' + key + '</b> nahi mili — <b>' + steps + '</b> comparison.';
+        busy = false; return;
+      }
+
+      const mid = low + Math.floor((high - low) / 2);
+      cs[low].classList.add('low');
+      cs[high].classList.add('high');
+      cs[mid].classList.add('mid');
+      steps++;
+
+      log.innerHTML = '⚡ Binary: low=<b>' + low + '</b> · mid=<b>' + mid +
+                      '</b> · high=<b>' + high + '</b> → arr[mid] = ' + data[mid];
+
+      if (data[mid] === key){
+        cs[mid].classList.remove('mid');
+        cs[mid].classList.add('done');
+        log.innerHTML = '⚡ Binary: <b>' + key + '</b> mili index <b>' + mid +
+                        '</b> pe, sirf <b>' + steps + '</b> comparison me! Super fast 🚀';
+        busy = false; return;
+      }
+
+      if (data[mid] < key) low = mid + 1;
+      else                 high = mid - 1;
+
+      setTimeout(step, 620);
+    })();
+  };
+
+  document.getElementById('searchReset').onclick = function(){
+    if (busy) return;
+    clear();
+    log.textContent = 'Reset. Key daalo aur algorithm chuno.';
+  };
+
+  build();
+})();
+
+/* ================================================================
+   9. DEMO — SORT (Slide 12)
+   ================================================================ */
+(function(){
+  const ORIGINAL = [64, 25, 12, 22, 11, 90, 45, 33];
+  let arr = ORIGINAL.slice();
+  const viz = document.getElementById('viz6');
+  const log = document.getElementById('sortLog');
+  let busy = false;
+
+  function build(){
+    viz.innerHTML = '';
+    arr.forEach(function(v, i){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val">' + v + '</div>';
+      viz.appendChild(c);
+    });
+  }
+
+  document.getElementById('sortBtn').onclick = function(){
+    if (busy) return;
+    busy = true;
+    arr.sort(function(a, b){ return a - b; });
+    build();
+    log.innerHTML = '⚡ <code>qsort(arr, n, sizeof(int), compare)</code> chalaya — array ab ascending order me hai.';
+    setTimeout(function(){ busy = false; }, 400);
+  };
+
+  document.getElementById('sortReset').onclick = function(){
