@@ -1,0 +1,2694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C Programming — Arrays Demonstration | Sitapur Shiksha Sansthan Resora</title>
+<style>
+/* ============ RESET & BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  background:#070b16;color:#e8edf7;overflow:hidden;
+  display:flex;flex-direction:column;height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ============ BACKGROUND ORBS ============ */
+.orbs{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.orb{position:absolute;border-radius:50%;filter:blur(95px);opacity:.32}
+.orb.a{width:560px;height:560px;background:#3b82f6;top:-190px;left:-150px}
+.orb.b{width:500px;height:500px;background:#a855f7;bottom:-200px;right:-130px}
+.orb.c{width:420px;height:420px;background:#06b6d4;top:38%;left:52%;opacity:.18}
+
+/* ============ TOPBAR ============ */
+.topbar{
+  position:relative;z-index:6;display:flex;align-items:center;gap:14px;
+  padding:11px 18px;border-bottom:1px solid rgba(255,255,255,.07);
+  backdrop-filter:blur(14px);background:rgba(7,11,22,.6);
+}
+.brand{font-weight:700;font-size:13.5px;letter-spacing:.06em;
+  background:linear-gradient(100deg,#38e1ff,#a78bfa 50%,#f472b6);
+  -webkit-background-clip:text;background-clip:text;color:transparent;white-space:nowrap}
+.topbar .spacer{flex:1}
+.counter{font-size:12.5px;color:#94a3b8;font-variant-numeric:tabular-nums;
+  border:1px solid rgba(255,255,255,.1);padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.03)}
+.icon-btn{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  color:#cbd5e1;border-radius:10px;padding:7px 11px;cursor:pointer;font-size:14px;
+  transition:.2s;line-height:1;
+}
+.icon-btn:hover{background:rgba(255,255,255,.12);color:#fff;transform:translateY(-1px)}
+
+/* ============ PROGRESS ============ */
+.progress{position:relative;z-index:6;height:3px;background:rgba(255,255,255,.06)}
+#progressBar{height:100%;width:0%;border-radius:0 3px 3px 0;
+  background:linear-gradient(90deg,#38e1ff,#a78bfa,#f472b6);
+  transition:width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 0 14px rgba(56,225,255,.6)}
+
+/* ============ DECK ============ */
+.deck{position:relative;flex:1;z-index:2;overflow:hidden}
+.slide{
+  position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;
+  padding:34px 26px 46px;
+  opacity:0;transform:translateY(26px) scale(.985);
+  transition:opacity .45s ease,transform .45s cubic-bezier(.4,0,.2,1);
+  pointer-events:none;
+}
+.slide.active{opacity:1;transform:none;pointer-events:auto}
+.slide::-webkit-scrollbar{width:9px}
+.slide::-webkit-scrollbar-track{background:transparent}
+.slide::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:9px}
+.slide::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.25)}
+.wrap{max-width:1080px;margin:0 auto}
+.center{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%}
+
+/* ============ TYPOGRAPHY ============ */
+h1{font-size:clamp(28px,5vw,52px);line-height:1.08;letter-spacing:-.025em;font-weight:800}
+h2{font-size:clamp(21px,2.9vw,33px);letter-spacing:-.02em;font-weight:750;margin-bottom:6px}
+h3{font-size:16.5px;font-weight:700;margin-bottom:10px;color:#dbe4f3;letter-spacing:-.01em}
+.grad{background:linear-gradient(100deg,#38e1ff,#a78bfa 45%,#f472b6);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:#a4b2c8;font-size:clamp(14px,1.55vw,17px);line-height:1.7;max-width:780px}
+.sub{color:#8b9ab3;font-size:14.5px;line-height:1.7}
+p{line-height:1.72}
+.slide-head{margin-bottom:22px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.07)}
+.slide-head .kicker{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:#38e1ff;font-weight:700;margin-bottom:8px;opacity:.9}
+
+/* ============ CARDS ============ */
+.card{
+  background:linear-gradient(160deg,rgba(255,255,255,.065),rgba(255,255,255,.018));
+  border:1px solid rgba(255,255,255,.10);border-radius:18px;padding:20px 22px;
+  box-shadow:0 24px 55px -30px rgba(0,0,0,.95);
+}
+.card+.card{margin-top:16px}
+.card h3{margin-top:0}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px}
+@media(max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+
+/* ============ PILLS & CHIPS ============ */
+.pill{display:inline-block;font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;
+  font-weight:700;color:#7dd3fc;border:1px solid rgba(125,211,252,.3);
+  background:rgba(56,225,255,.07);padding:6px 14px;border-radius:99px;margin-bottom:18px}
+.chips{display:flex;flex-wrap:wrap;gap:9px;justify-content:center;margin-top:26px}
+.chip{font-size:12.5px;padding:7px 14px;border-radius:99px;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);color:#b9c6da}
+.chip.cy{border-color:rgba(56,225,255,.35);color:#7dd3fc;background:rgba(56,225,255,.08)}
+.chip.vi{border-color:rgba(167,139,250,.35);color:#c4b5fd;background:rgba(167,139,250,.08)}
+.chip.pk{border-color:rgba(244,114,182,.35);color:#f9a8d4;background:rgba(244,114,182,.08)}
+.chip.gr{border-color:rgba(74,222,128,.35);color:#86efac;background:rgba(74,222,128,.08)}
+
+/* ============ CODE ============ */
+.code-wrap{position:relative;margin:14px 0}
+pre{
+  background:#060a13;border:1px solid rgba(255,255,255,.09);border-radius:14px;
+  padding:16px 18px;overflow-x:auto;
+  font-family:'JetBrains Mono','Fira Code','SF Mono',Consolas,monospace;
+  font-size:13.2px;line-height:1.72;color:#cbd5e1;
+}
+pre::-webkit-scrollbar{height:8px}
+pre::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:8px}
+code{font-family:'JetBrains Mono','Fira Code',Consolas,monospace}
+:not(pre)>code{background:rgba(56,225,255,.10);border:1px solid rgba(56,225,255,.18);
+  color:#7dd3fc;padding:2px 7px;border-radius:6px;font-size:12.8px}
+.tk-kw{color:#c084fc;font-weight:600}
+.tk-str{color:#86efac}
+.tk-com{color:#5b6b85;font-style:italic}
+.tk-num{color:#fbbf24}
+.tk-pre{color:#38e1ff;font-weight:600}
+.copy-btn{
+  position:absolute;top:9px;right:9px;font-size:11px;padding:5px 10px;border-radius:8px;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  color:#94a3b8;cursor:pointer;opacity:0;transition:.2s;font-family:inherit;
+}
+.code-wrap:hover .copy-btn{opacity:1}
+.copy-btn:hover{background:rgba(56,225,255,.16);color:#7dd3fc;border-color:rgba(56,225,255,.4)}
+
+/* ============ TABLES ============ */
+.tbl{width:100%;border-collapse:separate;border-spacing:0;font-size:13.6px;margin:14px 0;
+  border:1px solid rgba(255,255,255,.09);border-radius:14px;overflow:hidden}
+.tbl th{background:rgba(255,255,255,.055);padding:11px 14px;text-align:left;
+  font-weight:700;color:#cbd5e1;font-size:12.5px;letter-spacing:.04em;text-transform:uppercase;
+  border-bottom:1px solid rgba(255,255,255,.09)}
+.tbl td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.05);color:#a9b7cb;vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tr:hover td{background:rgba(255,255,255,.028)}
+.tbl .ok{color:#4ade80;font-weight:700}
+.tbl .no{color:#fb7185;font-weight:700}
+
+/* ============ NOTES ============ */
+.note{border-radius:14px;padding:14px 17px;font-size:13.6px;line-height:1.7;
+  margin:14px 0;border-left:3px solid;display:flex;gap:11px;align-items:flex-start}
+.note .ico{font-size:16px;line-height:1.4;flex-shrink:0}
+.note.tip{background:rgba(56,225,255,.07);border-color:#38e1ff;color:#a5e8ff}
+.note.warn{background:rgba(251,191,36,.07);border-color:#fbbf24;color:#fde68a}
+.note.dang{background:rgba(251,113,133,.08);border-color:#fb7185;color:#fecdd3}
+.note.ok{background:rgba(74,222,128,.07);border-color:#4ade80;color:#bbf7d0}
+.note.bio{background:rgba(167,139,250,.08);border-color:#a78bfa;color:#ddd6fe}
+
+/* ============ MERMAID DIAGRAM ============ */
+.diagram-box{
+  background:linear-gradient(160deg,rgba(255,255,255,.04),rgba(255,255,255,.01));
+  border:1px solid rgba(167,139,250,.25);border-radius:16px;
+  padding:20px;margin:16px 0;overflow-x:auto;text-align:center;
+}
+.diagram-box .caption{
+  font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:#a78bfa;font-weight:700;margin-bottom:14px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.diagram-box .caption::before,
+.diagram-box .caption::after{
+  content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(167,139,250,.4),transparent);
+}
+.diagram-box .mermaid{
+  display:inline-block;max-width:100%;
+}
+.mermaid svg{max-width:100%;height:auto}
+
+/* ============ INTERACTIVE DEMOS ============ */
+.demo{background:rgba(0,0,0,.28);border:1px dashed rgba(56,225,255,.28);
+  border-radius:16px;padding:18px;margin:16px 0}
+.demo-label{font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  color:#38e1ff;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.demo-label::before{content:'';width:7px;height:7px;border-radius:50%;background:#38e1ff;
+  box-shadow:0 0 10px #38e1ff;animation:pulse 1.8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+.array-viz{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;padding:8px 0}
+.cell{
+  width:72px;border-radius:12px;overflow:hidden;cursor:pointer;
+  border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);
+  transition:.22s;text-align:center;user-select:none;
+}
+.cell:hover{transform:translateY(-4px);border-color:rgba(56,225,255,.55);box-shadow:0 12px 26px -14px rgba(56,225,255,.7)}
+.cell-idx{font-size:10.5px;padding:4px 0;background:rgba(255,255,255,.06);color:#7c8ba3;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.03em}
+.cell-val{padding:13px 0;font-size:17px;font-weight:700;color:#e8edf7;
+  font-family:'JetBrains Mono',monospace}
+.cell.hl{border-color:#38e1ff;background:rgba(56,225,255,.16);
+  box-shadow:0 0 22px -4px rgba(56,225,255,.8);transform:translateY(-4px)}
+.cell.hl .cell-val{color:#a5f3ff}
+.cell.done{border-color:rgba(74,222,128,.55);background:rgba(74,222,128,.12)}
+.cell.kill{border-color:rgba(251,113,133,.55);background:rgba(251,113,133,.14)}
+.cell.low{border-color:rgba(251,191,36,.6);background:rgba(251,191,36,.12)}
+.cell.mid{border-color:#a78bfa;background:rgba(167,139,250,.2)}
+.cell.high{border-color:rgba(56,225,255,.6);background:rgba(56,225,255,.12)}
+.cell.empty{border-style:dashed;opacity:.32}
+
+.info-panel{margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.info-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:11px;padding:9px 16px;font-size:13px;min-width:120px;text-align:center}
+.info-box .k{display:block;font-size:10px;letter-spacing:.13em;text-transform:uppercase;
+  color:#7c8ba3;margin-bottom:4px}
+.info-box .v{font-family:'JetBrains Mono',monospace;font-weight:700;color:#38e1ff;font-size:14.5px}
+
+.controls-row{display:flex;gap:9px;flex-wrap:wrap;align-items:center;justify-content:center;margin-bottom:14px}
+.btn{
+  font-family:inherit;font-size:13px;font-weight:600;padding:9px 16px;border-radius:10px;
+  border:1px solid rgba(56,225,255,.32);background:rgba(56,225,255,.1);color:#7dd3fc;
+  cursor:pointer;transition:.18s;
+}
+.btn:hover{background:rgba(56,225,255,.2);transform:translateY(-1.5px);box-shadow:0 10px 22px -12px rgba(56,225,255,.9)}
+.btn:active{transform:translateY(0)}
+.btn.vi{border-color:rgba(167,139,250,.35);background:rgba(167,139,250,.1);color:#c4b5fd}
+.btn.vi:hover{background:rgba(167,139,250,.2)}
+.btn.pk{border-color:rgba(244,114,182,.35);background:rgba(244,114,182,.1);color:#f9a8d4}
+.btn.pk:hover{background:rgba(244,114,182,.2)}
+.btn.gh{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.14);color:#a9b7cb}
+.btn.gh:hover{background:rgba(255,255,255,.1);color:#fff;box-shadow:none}
+
+input[type=number],input[type=text]{
+  font-family:'JetBrains Mono',monospace;font-size:13px;padding:8px 11px;width:88px;
+  border-radius:9px;border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.4);color:#e8edf7;outline:none;transition:.18s;
+}
+input:focus{border-color:#38e1ff;box-shadow:0 0 0 3px rgba(56,225,255,.13)}
+.log{font-family:'JetBrains Mono',monospace;font-size:12.4px;color:#8b9ab3;
+  margin-top:12px;min-height:22px;text-align:center;line-height:1.7}
+.log b{color:#38e1ff}
+
+.switch{display:inline-flex;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  border-radius:11px;padding:3px;gap:3px}
+.switch button{font-family:inherit;font-size:12.2px;font-weight:600;padding:7px 15px;border:none;
+  border-radius:8px;background:transparent;color:#8b9ab3;cursor:pointer;transition:.2s}
+.switch button.on{background:linear-gradient(135deg,#38e1ff,#a78bfa);color:#05070f;
+  box-shadow:0 6px 16px -8px rgba(56,225,255,.95)}
+
+.tabs{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.tab{font-family:inherit;font-size:12.6px;font-weight:600;padding:8px 15px;border-radius:10px;
+  border:1px solid rgba(255,255,255,.11);background:rgba(255,255,255,.04);color:#93a2b8;
+  cursor:pointer;transition:.2s}
+.tab:hover{background:rgba(255,255,255,.09);color:#dbe4f3}
+.tab.on{background:linear-gradient(135deg,rgba(56,225,255,.2),rgba(167,139,250,.2));
+  border-color:rgba(56,225,255,.5);color:#a5f3ff}
+.tab-panel{display:none}
+.tab-panel.on{display:block;animation:fadeUp .35s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.q{margin-bottom:18px}
+.q .qt{font-size:14.5px;font-weight:650;margin-bottom:10px;color:#dbe4f3;line-height:1.6}
+.q .opts{display:flex;flex-direction:column;gap:7px}
+.opt{text-align:left;font-family:inherit;font-size:13.2px;
+  padding:11px 15px;border-radius:10px;border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.035);color:#a9b7cb;cursor:pointer;transition:.18s;line-height:1.5}
+.opt:hover{border-color:rgba(56,225,255,.4);background:rgba(56,225,255,.07);color:#dbe4f3}
+.opt.right{border-color:#4ade80;background:rgba(74,222,128,.14);color:#bbf7d0}
+.opt.wrong{border-color:#fb7185;background:rgba(251,113,133,.14);color:#fecdd3}
+.opt:disabled{cursor:default}
+
+.controls{
+  position:relative;z-index:6;display:flex;align-items:center;gap:14px;
+  padding:11px 18px;border-top:1px solid rgba(255,255,255,.07);
+  backdrop-filter:blur(14px);background:rgba(7,11,22,.6);
+}
+.nav-btn{
+  font-family:inherit;font-size:13.5px;font-weight:650;padding:9px 18px;border-radius:11px;
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.055);
+  color:#cbd5e1;cursor:pointer;transition:.2s;white-space:nowrap;
+}
+.nav-btn:hover:not(:disabled){background:rgba(56,225,255,.14);border-color:rgba(56,225,255,.45);
+  color:#a5f3ff;transform:translateY(-1.5px)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.dots{flex:1;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;overflow:hidden}
+.dot{width:7px;height:7px;border-radius:99px;background:rgba(255,255,255,.18);
+  cursor:pointer;transition:.25s;border:none;padding:0}
+.dot:hover{background:rgba(255,255,255,.4)}
+.dot.on{width:22px;background:linear-gradient(90deg,#38e1ff,#a78bfa);box-shadow:0 0 12px rgba(56,225,255,.7)}
+@media(max-width:700px){.dots{display:none}}
+
+.toc{
+  position:fixed;top:0;left:0;bottom:0;width:300px;z-index:20;
+  background:rgba(9,13,24,.97);backdrop-filter:blur(20px);
+  border-right:1px solid rgba(255,255,255,.1);
+  transform:translateX(-100%);transition:transform .35s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+}
+.toc.open{transform:none}
+.toc-head{padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:space-between}
+.toc-head span{font-size:12px;letter-spacing:.15em;text-transform:uppercase;
+  font-weight:700;color:#38e1ff}
+.toc-list{flex:1;overflow-y:auto;padding:10px}
+.toc-list::-webkit-scrollbar{width:6px}
+.toc-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:6px}
+.toc-item{
+  display:flex;gap:11px;align-items:center;width:100%;text-align:left;
+  font-family:inherit;font-size:13.2px;padding:10px 13px;border-radius:10px;
+  border:none;background:transparent;color:#93a2b8;cursor:pointer;transition:.18s;
+  margin-bottom:2px;line-height:1.4;
+}
+.toc-item:hover{background:rgba(255,255,255,.06);color:#dbe4f3}
+.toc-item.on{background:linear-gradient(90deg,rgba(56,225,255,.15),transparent);
+  color:#a5f3ff;font-weight:600}
+.toc-item .num{font-family:'JetBrains Mono',monospace;font-size:11px;color:#5b6b85;
+  min-width:22px}
+.toc-item.on .num{color:#38e1ff}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:19;opacity:0;
+  pointer-events:none;transition:.3s}
+.backdrop.on{opacity:1;pointer-events:auto}
+
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;
+  padding:5px 11px;border-radius:8px;letter-spacing:.03em}
+.badge.tc{background:rgba(251,113,133,.13);color:#fda4af;border:1px solid rgba(251,113,133,.3)}
+.badge.gc{background:rgba(74,222,128,.13);color:#86efac;border:1px solid rgba(74,222,128,.3)}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,.055);font-size:13.4px}
+.kv:last-child{border-bottom:none}
+.kv .k{color:#8b9ab3}
+.kv .v{font-family:'JetBrains Mono',monospace;color:#dbe4f3;font-weight:600;text-align:right}
+ul.clean{list-style:none;padding-left:0}
+ul.clean li{position:relative;padding-left:22px;margin-bottom:10px;font-size:13.8px;
+  line-height:1.7;color:#a9b7cb}
+ul.clean li::before{content:'▸';position:absolute;left:4px;color:#38e1ff;font-weight:700}
+.real-box{background:linear-gradient(140deg,rgba(167,139,250,.13),rgba(56,225,255,.07));
+  border:1px solid rgba(167,139,250,.3);border-radius:16px;padding:16px 20px;margin:14px 0;
+  display:flex;gap:14px;align-items:flex-start}
+.real-box .emoji{font-size:26px;flex-shrink:0}
+.real-box .txt{font-size:13.8px;line-height:1.7;color:#ddd6fe}
+.real-box .txt b{color:#c4b5fd}
+.scroll-hint{position:absolute;bottom:10px;right:22px;font-size:11px;color:#4d5b73;
+  letter-spacing:.1em;text-transform:uppercase;pointer-events:none}
+
+.title-meta{display:flex;flex-direction:column;gap:6px;align-items:center;margin-top:22px}
+.title-meta .org{font-size:15.5px;font-weight:650;color:#cbd5e1;letter-spacing:.02em}
+.title-meta .inst{font-size:13.5px;color:#8b9ab3;letter-spacing:.04em}
+.title-meta .course{font-size:12.5px;color:#7dd3fc;letter-spacing:.12em;text-transform:uppercase;font-weight:700;margin-top:4px}
+.title-rule{width:60px;height:2px;background:linear-gradient(90deg,#38e1ff,#a78bfa);border-radius:2px;margin:18px auto}
+</style>
+</head>
+<body>
+
+<div class="orbs">
+  <div class="orb a"></div>
+  <div class="orb b"></div>
+  <div class="orb c"></div>
+</div>
+
+<div class="topbar">
+  <button class="icon-btn" id="menuBtn" title="Contents">☰</button>
+  <div class="brand">C Programming — Arrays Demonstration</div>
+  <div class="spacer"></div>
+  <div class="counter"><span id="cur">1</span> / <span id="total">22</span></div>
+</div>
+<div class="progress"><div id="progressBar"></div></div>
+
+<div class="backdrop" id="backdrop"></div>
+<aside class="toc" id="toc">
+  <div class="toc-head">
+    <span>Contents</span>
+    <button class="icon-btn" id="closeToc">✕</button>
+  </div>
+  <div class="toc-list" id="tocList"></div>
+</aside>
+
+<main class="deck" id="deck">
+
+<!-- ===== SLIDE 1 : TITLE ===== -->
+<section class="slide" data-title="Title">
+  <div class="wrap center">
+    <div class="pill">BCA First Year · Programming in C</div>
+    <h1><span class="grad">C Programming Arrays</span><br>Demonstrations</h1>
+    <div class="title-rule"></div>
+    <div class="title-meta">
+      <div class="org">Sitapur Shiksha Sansthan Resora</div>
+      <div class="inst">Department of Computer Applications</div>
+      <div class="course">BCA — First Year Students</div>
+    </div>
+    <p class="lead" style="margin-top:30px">
+      This presentation covers the fundamental concepts of arrays in C —
+      declaration, initialization, memory layout, traversal, searching, sorting,
+      strings, and two-dimensional arrays. Every concept is explained with
+      structured diagrams, practical code examples, and interactive demonstrations.
+    </p>
+    <div class="chips">
+      <span class="chip cy">Declaration</span>
+      <span class="chip vi">Memory Layout</span>
+      <span class="chip pk">Traversal</span>
+      <span class="chip gr">Searching</span>
+      <span class="chip cy">Sorting</span>
+      <span class="chip vi">2D Arrays</span>
+      <span class="chip pk">Strings</span>
+      <span class="chip gr">Flowcharts</span>
+    </div>
+    <p class="sub" style="margin-top:34px;font-size:12.5px;letter-spacing:.1em">
+      NAVIGATE WITH&nbsp; <b style="color:#38e1ff">←</b> &nbsp;<b style="color:#38e1ff">→</b> &nbsp;KEYS&nbsp; · &nbsp;<b style="color:#38e1ff">☰</b>&nbsp; FOR CONTENTS
+    </p>
+  </div>
+</section>
+
+<!-- ===== SLIDE 2 : WHAT IS AN ARRAY ===== -->
+<section class="slide" data-title="What is an Array?">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 01 · Fundamentals</div>
+      <h2>What is an <span class="grad">Array</span>?</h2>
+    </div>
+
+    <div class="card">
+      <p style="font-size:15px;color:#b9c6da">
+        Consider a scenario where you need to store the marks of <b style="color:#38e1ff">10 students</b>.
+        Declaring 10 separate variables is impractical:
+      </p>
+      <div class="code-wrap"><pre><code>int marks1, marks2, marks3, marks4, marks5;
+int marks6, marks7, marks8, marks9, marks10;
+/* Inefficient and difficult to manage */</code></pre></div>
+      <p style="font-size:15px;color:#b9c6da;margin-top:10px">
+        Instead, a single <b style="color:#a78bfa">array</b> stores all of them:
+      </p>
+      <div class="code-wrap"><pre><code>int marks[10];   /* One declaration for 10 elements */</code></pre></div>
+      <p class="sub" style="margin-top:14px;font-size:14px">
+        <b>Definition:</b> An array is a collection of elements of the <b>same data type</b>
+        stored in <b>contiguous memory locations</b>. Each element is accessed by its
+        <b>index</b>, which starts from <b>0</b>.
+      </p>
+    </div>
+
+    <div class="diagram-box">
+      <div class="caption">Structure of an Array in Memory</div>
+      <div class="mermaid">
+flowchart LR
+    subgraph A["int marks[5]"]
+        direction LR
+        C0["[0]<br/><b>85</b><br/><i>1000</i>"]
+        C1["[1]<br/><b>92</b><br/><i>1004</i>"]
+        C2["[2]<br/><b>78</b><br/><i>1008</i>"]
+        C3["[3]<br/><b>95</b><br/><i>1012</i>"]
+        C4["[4]<br/><b>88</b><br/><i>1016</i>"]
+    end
+    C0 --> C1 --> C2 --> C3 --> C4
+    classDef cell fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    class C0,C1,C2,C3,C4 cell
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Array Explorer — click any cell to inspect it</div>
+
+      <div class="controls-row">
+        <div class="switch" id="archSwitch">
+          <button class="on" data-bytes="4">GCC · 64-bit (int = 4 bytes)</button>
+          <button data-bytes="2">Turbo C · 16-bit (int = 2 bytes)</button>
+        </div>
+      </div>
+
+      <div class="array-viz" id="viz1"></div>
+
+      <div class="info-panel">
+        <div class="info-box"><span class="k">Index</span><span class="v" id="v1i">—</span></div>
+        <div class="info-box"><span class="k">Value</span><span class="v" id="v1v">—</span></div>
+        <div class="info-box"><span class="k">Address</span><span class="v" id="v1a">—</span></div>
+        <div class="info-box"><span class="k">Bytes</span><span class="v" id="v1b">—</span></div>
+      </div>
+      <div class="log" id="v1log">Click a cell to inspect its index, value, and memory address.</div>
+    </div>
+
+    <div class="note tip">
+      <span class="ico">📌</span>
+      <div><b>Important:</b> Arrays are <b>zero-indexed</b>. The first element is at index
+      <code>0</code>, not <code>1</code>. For an array of size 10, valid indices are
+      <code>0</code> through <code>9</code>. <code>marks[10]</code> is out of bounds.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 3 : REAL WORLD EXAMPLES ===== -->
+<section class="slide" data-title="Real-World Applications">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 02 · Applications</div>
+      <h2>Real-World <span class="grad">Applications of Arrays</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:20px">
+      Arrays are used extensively in software systems. The following examples illustrate
+      common practical applications:
+    </p>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>📊 Student Marks Management</h3>
+        <p class="sub" style="margin-bottom:10px">Storing marks of 5 subjects for a student:</p>
+        <div class="code-wrap"><pre><code>int marks[5] = {85, 92, 78, 95, 88};
+/* marks[0] = Physics, marks[1] = Chemistry, ... */</code></pre></div>
+        <div class="real-box" style="margin:8px 0 0 0;padding:12px 14px">
+          <span class="emoji" style="font-size:20px">🎓</span>
+          <div class="txt" style="font-size:13px">
+            Average, total, highest marks — all computed with a single loop.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>📱 Contact Management</h3>
+        <p class="sub" style="margin-bottom:10px">Storing phone numbers of 10 contacts:</p>
+        <div class="code-wrap"><pre><code>long contacts[10] = {
+    9876543210, 9123456789, /* ... */
+};</code></pre></div>
+        <div class="real-box" style="margin:8px 0 0 0;padding:12px 14px">
+          <span class="emoji" style="font-size:20px">📞</span>
+          <div class="txt" style="font-size:13px">
+            Retrieve the 5th contact's number directly: <code>contacts[4]</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🏏 Cricket Score Tracking</h3>
+        <p class="sub" style="margin-bottom:10px">Runs scored in 6 balls by a batsman:</p>
+        <div class="code-wrap"><pre><code>int runs[6] = {4, 0, 6, 1, 2, 4};
+/* Total = 17 runs */</code></pre></div>
+        <div class="real-box" style="margin:8px 0 0 0;padding:12px 14px">
+          <span class="emoji" style="font-size:20px">🏏</span>
+          <div class="txt" style="font-size:13px">
+            Total, strike rate, highest score — all easily computed.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🛒 Shopping Cart</h3>
+        <p class="sub" style="margin-bottom:10px">Prices of 4 items in a shopping cart:</p>
+        <div class="code-wrap"><pre><code>float cart[4] = {499.0, 1299.5, 250.0, 89.99};
+/* Compute total bill */</code></pre></div>
+        <div class="real-box" style="margin:8px 0 0 0;padding:12px 14px">
+          <span class="emoji" style="font-size:20px">🛍️</span>
+          <div class="txt" style="font-size:13px">
+            Count items, compute total price — all with a single loop.
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🎵 Playlist Management</h3>
+        <p class="sub" style="margin-bottom:10px">Storing names of 5 songs in a playlist:</p>
+        <div class="code-wrap"><pre><code>char playlist[5][30] = {
+    "Kesariya", "Tum Hi Ho", /* ... */
+};</code></pre></div>
+        <div class="real-box" style="margin:8px 0 0 0;padding:12px 14px">
+          <span class="emoji" style="font-size:20px">🎶</span>
+          <div class="txt" style="font-size:13px">
+            Access the 3rd song: <code>playlist[2]</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>🌡️ Daily Temperature Records</h3>
+        <p class="sub" style="margin-bottom:10px">Storing 30 days of temperature readings:</p>
+        <div class="code-wrap"><pre><code>float temp[30] = {28.5, 29.2, /* ... */};
+/* Max, min, average over the month */</code></pre></div>
+        <div class="real-box" style="margin:8px 0 0 0;padding:12px 14px">
+          <span class="emoji" style="font-size:20px">🌤️</span>
+          <div class="txt" style="font-size:13px">
+            Hottest day, coldest day, monthly average — all computed easily.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note tip">
+      <span class="ico">📌</span>
+      <div><b>Key principle:</b> Whenever a group of related data needs to be stored
+      and accessed by index — marks, contacts, songs, scores, prices — arrays provide
+      the appropriate solution.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 4 : DECLARATION ===== -->
+<section class="slide" data-title="Declaration & Initialization">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 03</div>
+      <h2>Declaration &amp; <span class="grad">Initialization</span></h2>
+    </div>
+
+    <h3>1 · Declaration Syntax</h3>
+    <p class="sub" style="margin-bottom:10px">The general syntax for declaring an array:</p>
+    <div class="code-wrap"><pre><code>data_type  array_name[size];
+
+/* Examples: */
+int    marks[10];       /* 10 integers */
+float  prices[5];       /* 5 floating-point values */
+char   name[20];        /* 20 characters */
+double matrix[3][3];    /* 3x3 two-dimensional array */</code></pre></div>
+
+    <div class="grid2" style="margin-top:16px">
+      <div class="card">
+        <h3>Memory Representation</h3>
+        <div class="array-viz" id="viz2"></div>
+        <p class="sub" style="text-align:center;margin-top:12px;font-size:12.5px">
+          <code>int marks[5] = {85, 92, 78, 95, 88};</code>
+        </p>
+      </div>
+      <div class="card">
+        <h3>Memory Addresses</h3>
+        <div class="kv"><span class="k">marks[0]</span><span class="v">1000</span></div>
+        <div class="kv"><span class="k">marks[1]</span><span class="v">1004</span></div>
+        <div class="kv"><span class="k">marks[2]</span><span class="v">1008</span></div>
+        <div class="kv"><span class="k">marks[3]</span><span class="v">1012</span></div>
+        <div class="kv"><span class="k">marks[4]</span><span class="v">1016</span></div>
+        <p class="sub" style="margin-top:10px;font-size:12.5px">
+          Each <code>int</code> occupies 4 bytes in GCC. The address increments by 4.
+        </p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:26px">2 · Initialization Methods</h3>
+    <div class="tabs" id="initTabs">
+      <button class="tab on" data-p="p1">Complete Initialization</button>
+      <button class="tab" data-p="p2">Partial Initialization</button>
+      <button class="tab" data-p="p3">Size Deduction</button>
+      <button class="tab" data-p="p4">Designated (GCC)</button>
+      <button class="tab" data-p="p5">Range (GCC)</button>
+    </div>
+
+    <div class="tab-panel on" id="p1">
+      <div class="code-wrap"><pre><code>int marks[5] = {85, 92, 78, 95, 88};
+/* All 5 elements initialized explicitly. Safest approach. */</code></pre></div>
+    </div>
+    <div class="tab-panel" id="p2">
+      <div class="code-wrap"><pre><code>int marks[5] = {85, 92};
+/* marks[0]=85, marks[1]=92
+   marks[2], [3], [4] => 0 ONLY if the array is 'static'
+   Otherwise, they contain indeterminate (garbage) values. */</code></pre></div>
+      <div class="note warn">
+        <span class="ico">⚠️</span>
+        <div>Elements not explicitly initialized have <b>indeterminate values</b> unless the
+        array has <b>static storage duration</b>. For local (automatic) arrays, always
+        initialize all elements, or use <code>{0}</code> to set everything to zero.</div>
+      </div>
+    </div>
+    <div class="tab-panel" id="p3">
+      <div class="code-wrap"><pre><code>int marks[] = {85, 92, 78, 95, 88};
+/* Compiler counts the initializers -> size = 5 */</code></pre></div>
+      <div class="note tip">
+        <span class="ico">📌</span>
+        <div>To obtain the element count safely:
+        <code>sizeof(marks) / sizeof(marks[0])</code></div>
+      </div>
+    </div>
+    <div class="tab-panel" id="p4">
+      <div class="code-wrap"><pre><code>int marks[10] = { [2] = 85, [7] = 92 };
+/* Only indices 2 and 7 are set; the rest are 0
+   Supported in GCC (C99), NOT in Turbo C */</code></pre></div>
+      <div class="note warn">
+        <span class="ico">⚠️</span>
+        <div><b>Turbo C does not support designated initializers</b> (it implements C89/C90).
+        GCC supports this feature from C99 onwards.</div>
+      </div>
+    </div>
+    <div class="tab-panel" id="p5">
+      <div class="code-wrap"><pre><code>int att[100] = { [0 ... 9] = 1, [10 ... 98] = 2, 3 };
+/* Index 0-9   = 1
+   Index 10-98 = 2
+   Index 99    = 3 */</code></pre></div>
+      <div class="note tip">
+        <span class="ico">📌</span>
+        <div>Range designators are a <b>GCC extension</b> (also supported by Clang).
+        They are not available in Turbo C.</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 5 : TURBO C vs GCC ===== -->
+<section class="slide" data-title="Turbo C vs GCC">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 04 · Compiler Differences</div>
+      <h2>Turbo C <span class="grad">vs</span> GCC — Key Differences</h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Many institutions use <b>Turbo C</b> for teaching, while modern development
+      environments use <b>GCC</b>. There are significant differences between the two
+      that students must understand to avoid compilation errors.
+    </p>
+
+    <div class="diagram-box">
+      <div class="caption">Compiler Architecture Comparison</div>
+      <div class="mermaid">
+flowchart TB
+    subgraph TC["🔴 Turbo C — 16-bit Legacy"]
+        T1["int = 2 bytes"]
+        T2["Max object = 64 KB"]
+        T3["No VLA support"]
+        T4["C89 / C90 only"]
+    end
+    subgraph GC["🟢 GCC — 32/64-bit Modern"]
+        G1["int = 4 bytes"]
+        G2["Max object = RAM-limited"]
+        G3["VLA supported (C99)"]
+        G4["C89 · C99 · C11 · C17"]
+    end
+    classDef tc fill:#2a1a24,stroke:#fb7185,stroke-width:2px,color:#fda4af
+    classDef gc fill:#1a2a20,stroke:#4ade80,stroke-width:2px,color:#86efac
+    class T1,T2,T3,T4 tc
+    class G1,G2,G3,G4 gc
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card" style="border-color:rgba(251,113,133,.28)">
+        <h3>🔴 Turbo C — Legacy Compiler</h3>
+        <ul class="clean">
+          <li>Designed for <b>16-bit</b> systems (late 1980s)</li>
+          <li>Maximum array size: <b>64 KB</b> (segment limit)</li>
+          <li><code>int</code> occupies <b>2 bytes</b></li>
+          <li>Array size must be a <b>compile-time constant</b></li>
+          <li>Does not support <code>//</code> comments</li>
+        </ul>
+      </div>
+
+      <div class="card" style="border-color:rgba(74,222,128,.28)">
+        <h3>🟢 GCC — Modern Compiler</h3>
+        <ul class="clean">
+          <li>Supports <b>32-bit and 64-bit</b> architectures</li>
+          <li>Array size limited only by available RAM</li>
+          <li><code>int</code> occupies <b>4 bytes</b></li>
+          <li>Supports <b>Variable Length Arrays (VLA)</b> in C99</li>
+          <li>Available on Linux, macOS, and Windows</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note warn">
+      <span class="ico">⚠️</span>
+      <div><b>Important:</b> If a program compiles in Turbo C but fails in GCC (or vice
+      versa), the cause is usually the <b>64 KB limit</b> or <b>VLA support</b>.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 6 : VLA ===== -->
+<section class="slide" data-title="Variable Length Arrays">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 05 · Variable Length Arrays</div>
+      <h2>Variable Length Arrays <span class="grad">(VLA)</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      A Variable Length Array allows the array size to be determined at <b>runtime</b>
+      rather than compile time. This is useful when the size depends on user input.
+    </p>
+
+    <div class="diagram-box">
+      <div class="caption">VLA Support Decision Flow</div>
+      <div class="mermaid">
+flowchart TD
+    Start(["User enters array size"]) --> Which{"Which compiler?"}
+    Which -->|"Turbo C"| TC["❌ Compile Error<br/>Size must be constant"]
+    Which -->|"GCC (C99+)"| GC["✅ Compiles fine<br/>VLA created at runtime"]
+    TC --> Fix["Use malloc() instead"]
+    GC --> OK(["Program runs"])
+    Fix --> OK
+    classDef start fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    classDef good fill:#1a2a20,stroke:#4ade80,stroke-width:2px,color:#bbf7d0
+    classDef bad fill:#2a1a24,stroke:#fb7185,stroke-width:2px,color:#fecdd3
+    classDef fix fill:#2a2418,stroke:#fbbf24,stroke-width:2px,color:#fde68a
+    class Start,Which start
+    class GC,OK good
+    class TC bad
+    class Fix fix
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card" style="border-color:rgba(251,113,133,.28)">
+        <h3><span class="badge tc">🔴 Turbo C</span> — Not Supported</h3>
+        <div class="code-wrap"><pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n;
+    printf("Enter size: ");
+    scanf("%d", &amp;n);
+    int marks[n];   /* ❌ ERROR!
+       Turbo C requires a constant size */
+    return 0;
+}</code></pre></div>
+      </div>
+
+      <div class="card" style="border-color:rgba(74,222,128,.28)">
+        <h3><span class="badge gc">🟢 GCC</span> — Supported</h3>
+        <div class="code-wrap"><pre><code>#include &lt;stdio.h&gt;
+
+int main() {
+    int n;
+    printf("Enter size: ");
+    scanf("%d", &amp;n);
+    int marks[n];   /* ✅ Works!
+       VLA supported since C99 */
+    return 0;
+}</code></pre></div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px">Turbo C Workaround — Using <code>malloc()</code></h3>
+    <div class="code-wrap"><pre><code>#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+
+int main() {
+    int n, i;
+    int *marks;   /* pointer, not array */
+
+    printf("Enter number of subjects: ");
+    scanf("%d", &amp;n);
+
+    marks = (int *)malloc(n * sizeof(int));  /* runtime allocation */
+    if (marks == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1;
+    }
+
+    for (i = 0; i &lt; n; i++) {
+        printf("Enter marks for subject %d: ", i + 1);
+        scanf("%d", &amp;marks[i]);
+    }
+
+    printf("Marks: ");
+    for (i = 0; i &lt; n; i++)
+        printf("%d ", marks[i]);
+
+    free(marks);   /* Always free allocated memory */
+    return 0;
+}</code></pre></div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 7 : 64 KB LIMIT ===== -->
+<section class="slide" data-title="Memory Limits">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 06 · Memory Constraints</div>
+      <h2>Turbo C's <span class="grad">64 KB Limit</span></h2>
+    </div>
+
+    <div class="note dang">
+      <span class="ico">⛔</span>
+      <div><b>In Turbo C, no single object (array, struct, or union) can exceed
+      65,536 bytes.</b> This is due to its 16-bit segmented memory architecture.
+      To work with larger arrays, <code>malloc()</code> must be used.</div>
+    </div>
+
+    <div class="diagram-box">
+      <div class="caption">Memory Model Comparison</div>
+      <div class="mermaid">
+flowchart LR
+    subgraph TC["🔴 Turbo C — Segmented Memory"]
+        direction TB
+        S1["Segment 1<br/>max 64 KB"]
+        S2["Segment 2<br/>max 64 KB"]
+        S3["Segment 3<br/>max 64 KB"]
+        S1 -.-> S2 -.-> S3
+    end
+    subgraph GC["🟢 GCC — Flat Memory"]
+        direction TB
+        F["Single flat address space<br/>Limited only by available RAM"]
+    end
+    classDef seg fill:#2a1a24,stroke:#fb7185,stroke-width:2px,color:#fda4af
+    classDef flat fill:#1a2a20,stroke:#4ade80,stroke-width:2px,color:#86efac
+    class S1,S2,S3 seg
+    class F flat
+      </div>
+    </div>
+
+    <table class="tbl">
+      <thead><tr><th>Feature</th><th>Turbo C</th><th>GCC</th></tr></thead>
+      <tbody>
+        <tr><td>Architecture</td><td class="no">16-bit</td><td class="ok">32 / 64-bit</td></tr>
+        <tr><td><code>sizeof(int)</code></td><td>2 bytes</td><td>4 bytes</td></tr>
+        <tr><td><code>sizeof(pointer)</code></td><td>2 bytes</td><td>4 / 8 bytes</td></tr>
+        <tr><td>Maximum object size</td><td class="no">64 KB</td><td class="ok">Limited by RAM</td></tr>
+        <tr><td>Memory model</td><td>Segmented</td><td>Flat</td></tr>
+      </tbody>
+    </table>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Array Size Calculator</div>
+      <div class="controls-row">
+        <span style="font-size:13.4px;color:#8b9ab3">Number of <code>int</code> elements:</span>
+        <input type="number" id="sizeInput" value="20000" min="1" max="1000000">
+        <button class="btn" id="sizeCalc">Calculate</button>
+      </div>
+      <div class="info-panel">
+        <div class="info-box"><span class="k">Turbo C</span><span class="v" id="szTC">—</span></div>
+        <div class="info-box"><span class="k">GCC</span><span class="v" id="szGC">—</span></div>
+        <div class="info-box"><span class="k">Result</span><span class="v" id="szVerdict">—</span></div>
+      </div>
+      <div class="log" id="szLog">Enter a count and press Calculate.</div>
+    </div>
+
+    <h3 style="margin-top:24px">Using <code>malloc()</code> in Turbo C</h3>
+    <div class="code-wrap"><pre><code>#include &lt;stdlib.h&gt;
+
+/* ❌ Will NOT compile in Turbo C: 40000 x 2 = 80,000 bytes > 64 KB */
+int hugeArray[40000];
+
+/* ✅ Works in Turbo C — allocated on heap */
+int *bigArray = (int *)malloc(40000 * sizeof(int));
+if (bigArray != NULL) {
+    bigArray[0] = 42;
+    /* ... use the array ... */
+    free(bigArray);   /* Always free allocated memory */
+}</code></pre></div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 8 : COMPARISON TABLE ===== -->
+<section class="slide" data-title="Full Comparison Table">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 07</div>
+      <h2>Turbo C vs GCC — <span class="grad">Complete Comparison</span></h2>
+    </div>
+
+    <table class="tbl">
+      <thead>
+        <tr><th style="width:34%">Feature</th><th style="width:33%">Turbo C (C89)</th><th style="width:33%">GCC (C99+)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Array size</td><td>Compile-time constant only</td><td>Constant <b>or</b> variable (VLA)</td></tr>
+        <tr><td>Maximum array size</td><td class="no">~64 KB</td><td class="ok">Limited by RAM</td></tr>
+        <tr><td><code>sizeof(int)</code></td><td>2 bytes</td><td>4 bytes</td></tr>
+        <tr><td>Designated initializers</td><td class="no">✗ Not supported</td><td class="ok">✓ <code>[i] = value</code></td></tr>
+        <tr><td>Range initializers</td><td class="no">✗ Not supported</td><td class="ok">✓ <code>[0 ... 9] = 1</code></td></tr>
+        <tr><td>Compound literals</td><td class="no">✗ Not supported</td><td class="ok">✓ <code>(int[]){1,2,3}</code></td></tr>
+        <tr><td><code>//</code> comments</td><td class="no">✗ Not supported</td><td class="ok">✓ Supported</td></tr>
+        <tr><td><code>clrscr()</code>, <code>getch()</code></td><td class="ok">✓ Available</td><td class="no">✗ Not available</td></tr>
+        <tr><td><code>qsort()</code> / <code>bsearch()</code></td><td class="ok">✓ Available</td><td class="ok">✓ Available</td></tr>
+        <tr><td>C Standard</td><td>C89 / C90</td><td>C89 · C99 · C11 · C17 · C23</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note tip">
+      <span class="ico">📌</span>
+      <div><b>Portability tip:</b> To write code that compiles on <b>both</b> compilers —
+        avoid VLAs, avoid designated initializers, use <code>malloc()</code> for large arrays,
+        and use <code>int main(void)</code> with <code>return 0;</code>.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 9 : TRAVERSAL ===== -->
+<section class="slide" data-title="Traversal">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 08 · Array Operations</div>
+      <h2>Traversal — <span class="grad">Accessing Every Element</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Traversal refers to visiting <b>each element</b> of an array exactly once.
+      This is typically accomplished using a loop.
+    </p>
+
+    <div class="diagram-box">
+      <div class="caption">Traversal Loop Flowchart</div>
+      <div class="mermaid">
+flowchart TD
+    Start(["Start"]) --> Init["i = 0"]
+    Init --> Check{"i < n ?"}
+    Check -->|"Yes"| Process["Process arr[i]"]
+    Process --> Inc["i = i + 1"]
+    Inc --> Check
+    Check -->|"No"| End(["End"])
+    classDef start fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    classDef proc fill:#2a2038,stroke:#a78bfa,stroke-width:2px,color:#c4b5fd
+    classDef dec fill:#1a2438,stroke:#fbbf24,stroke-width:2px,color:#fde68a
+    class Start,End start
+    class Process,Inc proc
+    class Check,Init dec
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>➡️ Forward Traversal</h3>
+        <div class="code-wrap"><pre><code>int runs[5] = {10, 20, 30, 40, 50};
+int n = 5;
+
+for (int i = 0; i &lt; n; i++) {
+    printf("Ball %d: %d runs\n", i + 1, runs[i]);
+}</code></pre></div>
+      </div>
+      <div class="card">
+        <h3>⬅️ Backward Traversal</h3>
+        <div class="code-wrap"><pre><code>int runs[5] = {10, 20, 30, 40, 50};
+int n = 5;
+
+for (int i = n - 1; i &gt;= 0; i--) {
+    printf("Ball %d: %d runs\n", i + 1, runs[i]);
+}</code></pre></div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Traversal Visualization</div>
+      <div class="controls-row">
+        <button class="btn" id="trFwd">▶ Forward Traversal</button>
+        <button class="btn vi" id="trBwd">◀ Backward Traversal</button>
+        <button class="btn gh" id="trReset">Reset</button>
+      </div>
+      <div class="array-viz" id="viz3"></div>
+      <div class="log" id="trLog">Press a button to observe the loop execution.</div>
+    </div>
+
+    <div class="note tip">
+      <span class="ico">📌</span>
+      <div>Traversal is <b>O(n)</b> — each element is visited exactly once.
+      Computing total, finding maximum, or displaying a list all rely on traversal.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 10 : INSERT / DELETE ===== -->
+<section class="slide" data-title="Insertion & Deletion">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 09</div>
+      <h2>Insertion &amp; <span class="grad">Deletion</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Inserting or deleting an element at a specific position requires shifting
+      the remaining elements. Insertion shifts elements to the <b>right</b>;
+      deletion shifts elements to the <b>left</b>.
+    </p>
+
+    <div class="diagram-box">
+      <div class="caption">Insertion — Shift Right Process</div>
+      <div class="mermaid">
+flowchart LR
+    A["Original:<br/>[10][20][30][40][50]"] --> B["Insert 99 at index 2<br/>Step 1: shift right"]
+    B --> C["[10][20][__][30][40][50]"]
+    C --> D["Step 2: place value"]
+    D --> E["[10][20][99][30][40][50]"]
+    classDef step fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    classDef res fill:#2a2038,stroke:#a78bfa,stroke-width:2px,color:#c4b5fd
+    class A,B,C,D step
+    class E res
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>➕ Insertion at a Position</h3>
+        <div class="code-wrap"><pre><code>void insertElement(int arr[], int *n,
+                   int pos, int value) {
+    if (pos &lt; 0 || pos &gt; *n) {
+        printf("Invalid position!\n");
+        return;
+    }
+    /* Shift elements to the right */
+    for (int i = *n; i &gt; pos; i--) {
+        arr[i] = arr[i - 1];
+    }
+    arr[pos] = value;
+    (*n)++;
+}</code></pre></div>
+      </div>
+      <div class="card">
+        <h3>➖ Deletion at a Position</h3>
+        <div class="code-wrap"><pre><code>void deleteElement(int arr[], int *n, int pos) {
+    if (pos &lt; 0 || pos &gt;= *n) {
+        printf("Invalid position!\n");
+        return;
+    }
+    /* Shift elements to the left */
+    for (int i = pos; i &lt; *n - 1; i++) {
+        arr[i] = arr[i + 1];
+    }
+    (*n)--;
+}</code></pre></div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Insert and Delete Demonstration</div>
+      <div class="controls-row">
+        <input type="number" id="insPos" placeholder="pos" value="2" min="0" max="20">
+        <input type="number" id="insVal" placeholder="value" value="99">
+        <button class="btn" id="doInsert">＋ Insert</button>
+        <span style="width:14px"></span>
+        <input type="number" id="delPos" placeholder="pos" value="1" min="0" max="20">
+        <button class="btn pk" id="doDelete">－ Delete</button>
+        <button class="btn gh" id="doResetIns">Reset</button>
+      </div>
+      <div class="array-viz" id="viz4"></div>
+      <div class="info-panel">
+        <div class="info-box"><span class="k">Length</span><span class="v" id="insLen">5</span></div>
+        <div class="info-box"><span class="k">Capacity</span><span class="v" id="insCap">12</span></div>
+      </div>
+      <div class="log" id="insLog">Insertion shifts elements right · Deletion shifts elements left.</div>
+    </div>
+
+    <div class="note warn">
+      <span class="ico">⚠️</span>
+      <div>Both operations are <b>O(n)</b> in the worst case because of the shifting.
+      This is a fundamental trade-off of contiguous memory.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 11 : SEARCHING ===== -->
+<section class="slide" data-title="Searching">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 10</div>
+      <h2>Searching — <span class="grad">Linear and Binary Search</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      Searching refers to finding the position of a specific value in an array.
+      Two algorithms are commonly used: <b>Linear Search</b> (simple) and
+      <b>Binary Search</b> (efficient, requires sorted data).
+    </p>
+
+    <div class="diagram-box">
+      <div class="caption">Linear vs Binary Search — Decision Flow</div>
+      <div class="mermaid">
+flowchart TD
+    Start(["Search for key in array"]) --> Sorted{"Array sorted?"}
+    Sorted -->|"No"| Linear["Linear Search<br/>Check each element<br/>O(n)"]
+    Sorted -->|"Yes"| Binary["Binary Search<br/>Divide and conquer<br/>O(log n)"]
+    Linear --> Result["Return index or -1"]
+    Binary --> Result
+    classDef start fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    classDef slow fill:#2a2418,stroke:#fbbf24,stroke-width:2px,color:#fde68a
+    classDef fast fill:#1a2a20,stroke:#4ade80,stroke-width:2px,color:#bbf7d0
+    classDef dec fill:#2a2038,stroke:#a78bfa,stroke-width:2px,color:#c4b5fd
+    class Start start
+    class Linear slow
+    class Binary fast
+    class Sorted,Result dec
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>🔍 Linear Search · O(n)</h3>
+        <p class="sub" style="margin-bottom:10px">
+          Checks each element sequentially. Works on <b>any</b> array.
+        </p>
+        <div class="code-wrap"><pre><code>int linearSearch(int arr[], int n, int key) {
+    for (int i = 0; i &lt; n; i++) {
+        if (arr[i] == key)
+            return i;    /* found */
+    }
+    return -1;   /* not found */
+}</code></pre></div>
+      </div>
+      <div class="card">
+        <h3>⚡ Binary Search · O(log n)</h3>
+        <p class="sub" style="margin-bottom:10px">
+          Repeatedly divides the search interval. Requires a <b>sorted</b> array.
+        </p>
+        <div class="code-wrap"><pre><code>int binarySearch(int arr[], int low,
+                 int high, int key) {
+    while (low &lt;= high) {
+        int mid = low + (high - low) / 2;
+        if (arr[mid] == key)  return mid;
+        else if (arr[mid] &lt; key) low = mid + 1;
+        else                     high = mid - 1;
+    }
+    return -1;
+}</code></pre></div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Search Comparison</div>
+      <div class="controls-row">
+        <input type="number" id="searchKey" value="41">
+        <button class="btn" id="runLinear">🔍 Linear Search</button>
+        <button class="btn vi" id="runBinary">⚡ Binary Search</button>
+        <button class="btn gh" id="searchReset">Reset</button>
+      </div>
+      <div class="array-viz" id="viz5"></div>
+      <div class="log" id="searchLog">Enter a key and choose an algorithm.</div>
+    </div>
+
+    <div class="note tip">
+      <span class="ico">📌</span>
+      <div><b>Performance:</b> For n = 1,000,000 elements, linear search may require
+      1,000,000 comparisons; binary search requires at most <b>20</b>.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 12 : SORTING ===== -->
+<section class="slide" data-title="Sorting with qsort()">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 11</div>
+      <h2>Sorting with <span class="grad">qsort()</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      C provides a powerful built-in sorting function in <code>&lt;stdlib.h&gt;</code>:
+      <b>qsort()</b>. It implements the quick-sort algorithm and works on any data type.
+    </p>
+
+    <div class="diagram-box">
+      <div class="caption">qsort() — Function Parameters</div>
+      <div class="mermaid">
+flowchart LR
+    Q["qsort()"] --> P1["base<br/>Array pointer"]
+    Q --> P2["nelem<br/>Element count"]
+    Q --> P3["size<br/>Bytes per element"]
+    Q --> P4["compar<br/>Comparison function"]
+    P4 --> R["Returns &lt;0, 0, or &gt;0"]
+    classDef main fill:#2a2038,stroke:#a78bfa,stroke-width:3px,color:#c4b5fd
+    classDef param fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    classDef ret fill:#1a2a20,stroke:#4ade80,stroke-width:2px,color:#bbf7d0
+    class Q main
+    class P1,P2,P3,P4 param
+    class R ret
+      </div>
+    </div>
+
+    <h3>Function Signature</h3>
+    <div class="code-wrap"><pre><code>void qsort(void *base, size_t nelem, size_t size,
+           int (*compar)(const void *, const void *));</code></pre></div>
+
+    <h3 style="margin-top:24px">Complete Working Example</h3>
+    <div class="code-wrap"><pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/* Comparison function for integers (ascending) */
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}
+
+int main(void) {
+    int scores[] = {64, 25, 12, 22, 11};
+    int n = sizeof(scores) / sizeof(scores[0]);
+
+    qsort(scores, n, sizeof(int), compare);
+
+    for (int i = 0; i &lt; n; i++)
+        printf("%d ", scores[i]);
+    /* Output: 11 12 22 25 64 */
+
+    return 0;
+}</code></pre></div>
+
+    <div class="grid2" style="margin-top:18px">
+      <div class="card">
+        <h3>⬆️ Ascending Order</h3>
+        <div class="code-wrap"><pre><code>return (*(int *)a - *(int *)b);</code></pre></div>
+      </div>
+      <div class="card">
+        <h3>⬇️ Descending Order</h3>
+        <div class="code-wrap"><pre><code>return (*(int *)b - *(int *)a);</code></pre></div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · qsort() Visualization</div>
+      <div class="controls-row">
+        <button class="btn" id="sortBtn">⚡ Run qsort()</button>
+        <button class="btn gh" id="sortReset">Shuffle</button>
+      </div>
+      <div class="array-viz" id="viz6"></div>
+      <div class="log" id="sortLog">Press the button to observe the sorting process.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 13 : COPY / REVERSE / FILL ===== -->
+<section class="slide" data-title="Copy, Reverse & Fill">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 12</div>
+      <h2>Copy, Reverse &amp; <span class="grad">Fill Operations</span></h2>
+    </div>
+
+    <div class="diagram-box">
+      <div class="caption">Reverse Operation — Two-Pointer Swap</div>
+      <div class="mermaid">
+flowchart LR
+    A["[10][20][30][40][50]"] --> B["Swap [0] and [4]"]
+    B --> C["[50][20][30][40][10]"]
+    C --> D["Swap [1] and [3]"]
+    D --> E["[50][40][30][20][10]"]
+    classDef step fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    classDef res fill:#2a2038,stroke:#a78bfa,stroke-width:2px,color:#c4b5fd
+    class A,B,C,D step
+    class E res
+      </div>
+    </div>
+
+    <div class="grid3">
+      <div class="card">
+        <h3>📋 Copying</h3>
+        <div class="code-wrap"><pre><code>int src[5] = {1,2,3,4,5};
+int dest[5];
+
+memcpy(dest, src, sizeof(src));
+
+/* or manual loop */
+for (int i = 0; i &lt; 5; i++)
+    dest[i] = src[i];</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>🔄 Reversing</h3>
+        <div class="code-wrap"><pre><code>void reverse(int arr[], int n) {
+    for (int i = 0; i &lt; n / 2; i++) {
+        int temp = arr[i];
+        arr[i] = arr[n - 1 - i];
+        arr[n - 1 - i] = temp;
+    }
+}</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>🧹 Filling</h3>
+        <div class="code-wrap"><pre><code>int arr[100];
+
+/* Set all bytes to 0 */
+memset(arr, 0, sizeof(arr));
+
+/* Warning! This does NOT set 1 */
+memset(arr, 1, sizeof(arr));</code></pre></div>
+      </div>
+    </div>
+
+    <div class="note warn">
+      <span class="ico">⚠️</span>
+      <div><b>memset caveat:</b> <code>memset()</code> sets <b>bytes</b>, not elements.
+      <code>memset(arr, 1, sizeof(arr))</code> on an <code>int</code> array does
+      <b>not</b> set each element to 1 — it sets each <i>byte</i> to 1, producing
+      values like <code>0x01010101</code>. Use a loop for non-zero fills.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 14 : PASSING TO FUNCTIONS ===== -->
+<section class="slide" data-title="Passing Arrays to Functions">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 13</div>
+      <h2>Passing Arrays to <span class="grad">Functions</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      When an array is passed to a function, C passes a <b>pointer to the first element</b>.
+      The array "decays" to a pointer. Understanding this is essential for correct C programs.
+    </p>
+
+    <div class="diagram-box">
+      <div class="caption">Array Decay — Passing to a Function</div>
+      <div class="mermaid">
+flowchart LR
+    Main["main()<br/>int marks[5]"] -->|"passes address"| Func["printArray(arr, n)"]
+    Func --> Inside["Inside function:<br/>arr is a POINTER<br/>sizeof(arr) = 8 bytes"]
+    Inside --> Warn["⚠️ Size must be<br/>passed separately"]
+    classDef main fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    classDef func fill:#2a2038,stroke:#a78bfa,stroke-width:2px,color:#c4b5fd
+    classDef warn fill:#2a2418,stroke:#fbbf24,stroke-width:2px,color:#fde68a
+    class Main,Func main
+    class Inside func
+    class Warn warn
+      </div>
+    </div>
+
+    <h3>Equivalent Function Declarations</h3>
+    <div class="code-wrap"><pre><code>void printArray(int arr[], int size);      /* most readable */
+void printArray(int *arr, int size);       /* explicit pointer */
+void printArray(int arr[100], int size);   /* size in [] is IGNORED */</code></pre></div>
+
+    <h3 style="margin-top:22px">Working Example</h3>
+    <div class="code-wrap"><pre><code>#include &lt;stdio.h&gt;
+
+void printArray(int arr[], int size) {
+    for (int i = 0; i &lt; size; i++) {
+        printf("%d ", arr[i]);
+    }
+    printf("\n");
+}
+
+int main(void) {
+    int marks[5] = {10, 20, 30, 40, 50};
+    printArray(marks, 5);   /* array name decays to pointer */
+    return 0;
+}</code></pre></div>
+
+    <div class="note dang">
+      <span class="ico">⛔</span>
+      <div><b>Critical:</b> The array size is <b>NOT</b> passed automatically.
+      It must be passed separately. C performs <b>no bounds checking</b> —
+      accessing <code>arr[10]</code> in a 5-element array is <b>undefined behavior</b>.</div>
+    </div>
+
+    <div class="card" style="margin-top:18px">
+      <h3>🔬 Why Size Matters — A Common Pitfall</h3>
+      <div class="code-wrap"><pre><code>void broken(int arr[]) {
+    /* sizeof(arr) == sizeof(int*)  ->  8 bytes on 64-bit GCC
+       NOT the size of the actual array! */
+    int n = sizeof(arr) / sizeof(arr[0]);   /* ❌ INCORRECT */
+    printf("%d\n", n);
+}
+
+int main(void) {
+    int marks[100];
+    broken(marks);   /* prints 2 (or 1) — completely wrong */
+    return 0;
+}</code></pre></div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 15 : UTILITY FUNCTIONS ===== -->
+<section class="slide" data-title="Common Utility Functions">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 14</div>
+      <h2>Common <span class="grad">Utility Functions</span></h2>
+    </div>
+
+    <div class="diagram-box">
+      <div class="caption">Finding Maximum — Comparison Logic</div>
+      <div class="mermaid">
+flowchart TD
+    Start(["Start with max = arr[0]"]) --> Loop{"i < n ?"}
+    Loop -->|"Yes"| Comp{"arr[i] > max ?"}
+    Comp -->|"Yes"| Update["max = arr[i]"]
+    Comp -->|"No"| Inc["i++"]
+    Update --> Inc
+    Inc --> Loop
+    Loop -->|"No"| End(["Return max"])
+    classDef start fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    classDef dec fill:#2a2038,stroke:#a78bfa,stroke-width:2px,color:#c4b5fd
+    classDef act fill:#1a2438,stroke:#fbbf24,stroke-width:2px,color:#fde68a
+    class Start,End start
+    class Loop,Comp dec
+    class Update,Inc act
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>🔺 Maximum</h3>
+        <div class="code-wrap"><pre><code>int arrayMax(int arr[], int size) {
+    int max = arr[0];
+    for (int i = 1; i &lt; size; i++)
+        if (arr[i] &gt; max)
+            max = arr[i];
+    return max;
+}</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>🔻 Minimum</h3>
+        <div class="code-wrap"><pre><code>int arrayMin(int arr[], int size) {
+    int min = arr[0];
+    for (int i = 1; i &lt; size; i++)
+        if (arr[i] &lt; min)
+            min = arr[i];
+    return min;
+}</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>➕ Sum</h3>
+        <div class="code-wrap"><pre><code>int arraySum(int arr[], int size) {
+    int sum = 0;
+    for (int i = 0; i &lt; size; i++)
+        sum += arr[i];
+    return sum;
+}</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>📊 Average</h3>
+        <div class="code-wrap"><pre><code>double arrayAverage(int arr[], int size) {
+    return (double)arraySum(arr, size) / size;
+}
+/* The (double) cast is essential —
+   otherwise integer division occurs */</code></pre></div>
+      </div>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Interactive · Utility Functions Demonstration</div>
+      <div class="array-viz" id="viz7"></div>
+      <div class="info-panel">
+        <div class="info-box"><span class="k">Max</span><span class="v" id="uMax">—</span></div>
+        <div class="info-box"><span class="k">Min</span><span class="v" id="uMin">—</span></div>
+        <div class="info-box"><span class="k">Sum</span><span class="v" id="uSum">—</span></div>
+        <div class="info-box"><span class="k">Average</span><span class="v" id="uAvg">—</span></div>
+      </div>
+      <div class="controls-row" style="margin-top:14px;margin-bottom:0">
+        <button class="btn gh" id="uShuffle">🎲 Generate New Values</button>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 16 : 2D ARRAYS ===== -->
+<section class="slide" data-title="Two-Dimensional Arrays">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 15</div>
+      <h2>Two-Dimensional <span class="grad">Arrays</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      A two-dimensional (2D) array is a table of rows and columns. It is used
+      to represent matrices, grids, and tabular data.
+    </p>
+
+    <div class="diagram-box">
+      <div class="caption">2D Array — Structure and Row-Major Layout</div>
+      <div class="mermaid">
+flowchart TB
+    subgraph M["int marks[3][3] — Logical View"]
+        direction LR
+        R0["Row 0: [1][2][3]"]
+        R1["Row 1: [4][5][6]"]
+        R2["Row 2: [7][8][9]"]
+    end
+    M --> Flat["Flat Memory (Row-Major):<br/>1 · 2 · 3 · 4 · 5 · 6 · 7 · 8 · 9"]
+    classDef row fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    classDef flat fill:#2a2038,stroke:#a78bfa,stroke-width:2px,color:#c4b5fd
+    class R0,R1,R2 row
+    class Flat flat
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>Declaration and Access</h3>
+        <div class="code-wrap"><pre><code>int marks[3][3] = {
+    {1, 2, 3},
+    {4, 5, 6},
+    {7, 8, 9}
+};
+
+/* Element at row 1, column 2 */
+printf("%d\n", marks[1][2]);  /* 6 */
+
+/* Traverse the entire array */
+for (int i = 0; i &lt; 3; i++) {
+    for (int j = 0; j &lt; 3; j++) {
+        printf("%4d", marks[i][j]);
+    }
+    printf("\n");
+}</code></pre></div>
+      </div>
+
+      <div class="card">
+        <h3>Memory Layout (Row-Major Order)</h3>
+        <p class="sub" style="margin-bottom:12px">
+          Both Turbo C and GCC store 2D arrays in <b>row-major</b> order —
+          row 0 first, then row 1, and so on.
+        </p>
+        <div class="array-viz" id="viz8" style="gap:5px"></div>
+        <p class="sub" style="text-align:center;margin-top:12px;font-size:12px;color:#7c8ba3">
+          Flat view of <code>marks[3][3]</code> — 9 contiguous integers
+        </p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:26px">Address Formula</h3>
+    <div class="note tip">
+      <span class="ico">📌</span>
+      <div>
+        For a 2D array <code>T a[R][C]</code>, the address of <code>a[i][j]</code> is:<br><br>
+        <code style="font-size:14px">addr = base + (i * C + j) * sizeof(T)</code><br><br>
+        For example, in <code>int marks[3][3]</code>, <code>marks[1][2]</code> is at
+        <code>base + (1*3 + 2) * 4 = base + 20</code> bytes (GCC).
+      </div>
+    </div>
+
+    <div class="note warn">
+      <span class="ico">⚠️</span>
+      <div><b>Turbo C limitation:</b> <code>int big[200][200]</code> = 200 × 200 × 2 =
+      <b>80,000 bytes</b> — exceeds the 64 KB limit, so it <b>will not compile</b>.
+      In GCC it is only 160,000 bytes and works fine.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 17 : STRINGS ===== -->
+<section class="slide" data-title="Strings — Character Arrays">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 16</div>
+      <h2>Strings — <span class="grad">Character Arrays</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:18px">
+      In C, a string is simply an array of characters terminated by a
+      <b>null character</b> <code>'\0'</code>. There is no separate string type.
+    </p>
+
+    <div class="diagram-box">
+      <div class="caption">String Storage — "Hello" in Memory</div>
+      <div class="mermaid">
+flowchart LR
+    A["[0]<br/><b>H</b>"] --> B["[1]<br/><b>e</b>"] --> C["[2]<br/><b>l</b>"] --> D["[3]<br/><b>l</b>"] --> E["[4]<br/><b>o</b>"] --> F["[5]<br/><b>\\0</b><br/><i>terminator</i>"]
+    classDef chr fill:#1e293b,stroke:#38e1ff,stroke-width:2px,color:#e8edf7
+    classDef nul fill:#2a2038,stroke:#a78bfa,stroke-width:3px,color:#c4b5fd
+    class A,B,C,D,E chr
+    class F nul
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="array-viz" id="viz9"></div>
+      <p class="sub" style="text-align:center;margin-top:12px;font-size:12.5px">
+        <code>char name[20] = "Hello";</code> — note the invisible <code>'\0'</code> at index 5
+      </p>
+    </div>
+
+    <h3 style="margin-top:24px">The <code>&lt;string.h&gt;</code> Library</h3>
+    <div class="code-wrap"><pre><code>#include &lt;string.h&gt;
+
+char name[20] = "Hello";
+
+strlen(name);            /* 5  — length, excluding '\0' */
+strcpy(dest, name);      /* copy */
+strcat(name, " World");  /* concatenate -> "Hello World" */
+strcmp(s1, s2);          /* compare: 0 if equal */
+strchr(name, 'e');       /* first occurrence of 'e' */
+strstr(name, "ell");     /* first occurrence of substring */</code></pre></div>
+
+    <table class="tbl">
+      <thead><tr><th style="width:26%">Function</th><th style="width:40%">Purpose</th><th>Return Value</th></tr></thead>
+      <tbody>
+        <tr><td><code>strlen(s)</code></td><td>Length of string</td><td><code>size_t</code></td></tr>
+        <tr><td><code>strcpy(d, s)</code></td><td>Copy <code>s</code> into <code>d</code></td><td><code>d</code></td></tr>
+        <tr><td><code>strcat(d, s)</code></td><td>Append <code>s</code> onto <code>d</code></td><td><code>d</code></td></tr>
+        <tr><td><code>strcmp(s1, s2)</code></td><td>Compare strings</td><td><code>&lt;0</code>, <code>0</code>, <code>&gt;0</code></td></tr>
+        <tr><td><code>strchr(s, c)</code></td><td>Find first <code>c</code></td><td>Pointer or <code>NULL</code></td></tr>
+        <tr><td><code>strstr(s, sub)</code></td><td>Find substring</td><td>Pointer or <code>NULL</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="note dang">
+      <span class="ico">⛔</span>
+      <div><b>Always allocate <code>size + 1</code> bytes.</b> A 5-character string needs
+      <code>char s[6]</code> to hold the terminating <code>'\0'</code>.
+      Forgetting this causes <b>buffer overflows</b> — the leading cause of security
+      vulnerabilities in C programs.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 18 : CHEAT SHEET ===== -->
+<section class="slide" data-title="Reference Sheet">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 17</div>
+      <h2>Quick <span class="grad">Reference Sheet</span></h2>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>📐 Essential Syntax</h3>
+        <div class="kv"><span class="k">Declare</span><span class="v">type name[size];</span></div>
+        <div class="kv"><span class="k">Access</span><span class="v">name[index]</span></div>
+        <div class="kv"><span class="k">First index</span><span class="v">0</span></div>
+        <div class="kv"><span class="k">Last index</span><span class="v">size - 1</span></div>
+        <div class="kv"><span class="k">Element count</span><span class="v">sizeof(a)/sizeof(a[0])</span></div>
+        <div class="kv"><span class="k">Pass to function</span><span class="v">func(arr, size)</span></div>
+        <div class="kv"><span class="k">Dynamic allocation</span><span class="v">malloc(n * sizeof(T))</span></div>
+      </div>
+
+      <div class="card">
+        <h3>⏱️ Complexity Summary</h3>
+        <div class="kv"><span class="k">Access by index</span><span class="v" style="color:#4ade80">O(1)</span></div>
+        <div class="kv"><span class="k">Traversal</span><span class="v" style="color:#fbbf24">O(n)</span></div>
+        <div class="kv"><span class="k">Linear search</span><span class="v" style="color:#fbbf24">O(n)</span></div>
+        <div class="kv"><span class="k">Binary search</span><span class="v" style="color:#4ade80">O(log n)</span></div>
+        <div class="kv"><span class="k">Insert / Delete</span><span class="v" style="color:#fbbf24">O(n)</span></div>
+        <div class="kv"><span class="k">qsort()</span><span class="v" style="color:#fbbf24">O(n log n)</span></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>⚖️ Turbo C vs GCC — At a Glance</h3>
+      <table class="tbl" style="margin:0">
+        <thead><tr><th>Feature</th><th>Turbo C</th><th>GCC</th></tr></thead>
+        <tbody>
+          <tr><td>VLA</td><td class="no">✗</td><td class="ok">✓</td></tr>
+          <tr><td>Max object size</td><td class="no">64 KB</td><td class="ok">Limited by RAM</td></tr>
+          <tr><td>Designated initializers</td><td class="no">✗</td><td class="ok">✓</td></tr>
+          <tr><td><code>//</code> comments</td><td class="no">✗</td><td class="ok">✓</td></tr>
+          <tr><td><code>conio.h</code></td><td class="ok">✓</td><td class="no">✗</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h3>🎯 Key Rules to Remember</h3>
+      <ul class="clean" style="margin-top:6px">
+        <li>Indices run from <b>0 to size-1</b>.</li>
+        <li><b>Always</b> pass the size to functions — it does not travel with the array.</li>
+        <li><b>Never</b> read or write out of bounds. C performs no checks.</li>
+        <li>Reserve <b>size + 1</b> bytes for strings (for <code>'\0'</code>).</li>
+        <li>Use <code>malloc()</code> for large arrays — especially in Turbo C.</li>
+        <li><code>free()</code> everything you <code>malloc()</code>.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 19 : PROJECT ===== -->
+<section class="slide" data-title="Complete Project">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 18 · Project</div>
+      <h2>Complete <span class="grad">Working Project</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:16px">
+      A menu-driven "Student Marks Manager" program that demonstrates all the
+      concepts covered. Works on both Turbo C and GCC.
+    </p>
+
+    <div class="code-wrap"><pre><code>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+/* ---------- Function prototypes ---------- */
+void display(int arr[], int n);
+int  findMax(int arr[], int n);
+int  findMin(int arr[], int n);
+int  linearSearch(int arr[], int n, int key);
+void reverse(int arr[], int n);
+int  compare(const void *a, const void *b);
+
+/* ---------- Main ---------- */
+int main(void) {
+    int marks[100];
+    int n, choice, key, pos;
+
+    printf("=== STUDENT MARKS MANAGER ===\n");
+    printf("Enter number of students: ");
+    scanf("%d", &amp;n);
+
+    printf("Enter %d marks:\n", n);
+    for (int i = 0; i &lt; n; i++)
+        scanf("%d", &amp;marks[i]);
+
+    do {
+        printf("\n--- MENU ---\n");
+        printf("1. Display\n");
+        printf("2. Find Maximum\n");
+        printf("3. Find Minimum\n");
+        printf("4. Search\n");
+        printf("5. Reverse\n");
+        printf("6. Sort\n");
+        printf("7. Exit\n");
+        printf("Choice: ");
+        scanf("%d", &amp;choice);
+
+        switch (choice) {
+            case 1: display(marks, n); break;
+            case 2: printf("Max = %d\n", findMax(marks, n)); break;
+            case 3: printf("Min = %d\n", findMin(marks, n)); break;
+            case 4:
+                printf("Enter key: ");
+                scanf("%d", &amp;key);
+                pos = linearSearch(marks, n, key);
+                if (pos != -1)
+                    printf("Found at index %d\n", pos);
+                else
+                    printf("Not found\n");
+                break;
+            case 5: reverse(marks, n); printf("Reversed!\n"); break;
+            case 6: qsort(marks, n, sizeof(int), compare);
+                    printf("Sorted!\n"); break;
+            case 7: printf("Exiting...\n"); break;
+            default: printf("Invalid choice!\n");
+        }
+    } while (choice != 7);
+
+    return 0;
+}
+
+/* ---------- Implementations ---------- */
+void display(int arr[], int n) {
+    printf("Marks: ");
+    for (int i = 0; i &lt; n; i++) printf("%d ", arr[i]);
+    printf("\n");
+}
+
+int findMax(int arr[], int n) {
+    int max = arr[0];
+    for (int i = 1; i &lt; n; i++)
+        if (arr[i] &gt; max) max = arr[i];
+    return max;
+}
+
+int findMin(int arr[], int n) {
+    int min = arr[0];
+    for (int i = 1; i &lt; n; i++)
+        if (arr[i] &lt; min) min = arr[i];
+    return min;
+}
+
+int linearSearch(int arr[], int n, int key) {
+    for (int i = 0; i &lt; n; i++)
+        if (arr[i] == key) return i;
+    return -1;
+}
+
+void reverse(int arr[], int n) {
+    for (int i = 0; i &lt; n / 2; i++) {
+        int temp = arr[i];
+        arr[i] = arr[n - 1 - i];
+        arr[n - 1 - i] = temp;
+    }
+}
+
+int compare(const void *a, const void *b) {
+    return (*(int *)a - *(int *)b);
+}</code></pre></div>
+
+    <div class="grid2" style="margin-top:18px">
+      <div class="card">
+        <h3><span class="badge gc">🟢 GCC</span> Compilation</h3>
+        <div class="code-wrap"><pre><code>gcc -o marks_demo marks_demo.c
+./marks_demo</code></pre></div>
+      </div>
+      <div class="card">
+        <h3><span class="badge tc">🔴 Turbo C</span> Compilation</h3>
+        <div class="code-wrap"><pre><code>tcc marks_demo.c
+marks_demo.exe</code></pre></div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 20 : PITFALLS ===== -->
+<section class="slide" data-title="Common Pitfalls">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 19</div>
+      <h2>Common Pitfalls &amp; <span class="grad">Best Practices</span></h2>
+    </div>
+
+    <table class="tbl">
+      <thead><tr><th style="width:38%">⚠️ Pitfall</th><th>✅ Solution</th></tr></thead>
+      <tbody>
+        <tr><td><b>Off-by-one errors</b></td><td>Indices run from <code>0</code> to <code>n-1</code>. Use <code>i &lt; n</code>, not <code>i &lt;= n</code>.</td></tr>
+        <tr><td><b>Out-of-bounds access</b></td><td>Always check <code>i &lt; n</code>. C performs no bounds checking — undefined behavior.</td></tr>
+        <tr><td><b>Forgetting <code>'\0'</code> for strings</b></td><td>Allocate <code>size + 1</code> bytes for character arrays.</td></tr>
+        <tr><td><b>Not passing array size</b></td><td>Always pass size separately — <code>sizeof</code> inside a function gives pointer size.</td></tr>
+        <tr><td><b>Using uninitialized arrays</b></td><td>Initialize before use: <code>int a[10] = {0};</code></td></tr>
+        <tr><td><b>Turbo C 64 KB limit</b></td><td>Use <code>malloc()</code> for large arrays.</td></tr>
+        <tr><td><b>VLA in Turbo C</b></td><td>Use <code>malloc()</code> with a runtime size.</td></tr>
+        <tr><td><b><code>memset()</code> on int arrays</b></td><td>Use a loop — <code>memset</code> sets bytes, not elements.</td></tr>
+        <tr><td><b>Integer division in average</b></td><td>Cast: <code>(double)sum / n</code></td></tr>
+        <tr><td><b>Memory leaks</b></td><td>Every <code>malloc()</code> needs a matching <code>free()</code>.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="note ok">
+      <span class="ico">✅</span>
+      <div><b>Best practice:</b> Compile with warnings enabled.
+      <code>gcc -Wall -Wextra -pedantic code.c</code> catches most of these issues
+      before the program even runs.</div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 21 : QUIZ ===== -->
+<section class="slide" data-title="Quiz">
+  <div class="wrap">
+    <div class="slide-head">
+      <div class="kicker">Chapter 20 · Assessment</div>
+      <h2>Quick <span class="grad">Quiz</span></h2>
+    </div>
+
+    <p class="lead" style="margin-bottom:22px">Click an answer to check if it is correct.</p>
+
+    <div id="quiz"></div>
+
+    <div class="note tip" style="margin-top:24px">
+      <span class="ico">🎯</span>
+      <div>Score: <b id="quizScore" style="color:#38e1ff">0</b> / <b>6</b> —
+      <span id="quizMsg">answer all questions to see your result.</span></div>
+    </div>
+  </div>
+  <div class="scroll-hint">scroll ↓</div>
+</section>
+
+<!-- ===== SLIDE 22 : SUMMARY ===== -->
+<section class="slide" data-title="Summary">
+  <div class="wrap center">
+    <div class="pill">Chapter 21 · Conclusion</div>
+    <h1><span class="grad">Summary</span></h1>
+    <p class="lead" style="margin-top:18px">
+      This presentation covered the fundamental concepts of arrays in C —
+      from declaration and initialization to searching, sorting, and string
+      handling. Students are now equipped to write array-based programs in both
+      Turbo C and GCC.
+    </p>
+
+    <div class="grid4" style="margin-top:38px;width:100%;max-width:920px">
+      <div class="card" style="text-align:center;padding:16px">
+        <div style="font-size:26px;margin-bottom:6px">📐</div>
+        <div style="font-size:12.5px;color:#8b9ab3">Declaration</div>
+        <div style="font-size:12.5px;font-family:'JetBrains Mono',monospace;color:#38e1ff;margin-top:4px">type name[size]</div>
+      </div>
+      <div class="card" style="text-align:center;padding:16px">
+        <div style="font-size:26px;margin-bottom:6px">🔍</div>
+        <div style="font-size:12.5px;color:#8b9ab3">Searching</div>
+        <div style="font-size:12.5px;font-family:'JetBrains Mono',monospace;color:#a78bfa;margin-top:4px">Linear / Binary</div>
+      </div>
+      <div class="card" style="text-align:center;padding:16px">
+        <div style="font-size:26px;margin-bottom:6px">⚡</div>
+        <div style="font-size:12.5px;color:#8b9ab3">Sorting</div>
+        <div style="font-size:12.5px;font-family:'JetBrains Mono',monospace;color:#f472b6;margin-top:4px">qsort()</div>
+      </div>
+      <div class="card" style="text-align:center;padding:16px">
+        <div style="font-size:26px;margin-bottom:6px">⚖️</div>
+        <div style="font-size:12.5px;color:#8b9ab3">Portability</div>
+        <div style="font-size:12.5px;font-family:'JetBrains Mono',monospace;color:#4ade80;margin-top:4px">Turbo C ↔ GCC</div>
+      </div>
+    </div>
+
+    <div class="note bio" style="max-width:760px;margin-top:34px;text-align:left">
+      <span class="ico">🚀</span>
+      <div><b>Next steps:</b> Arrays form the foundation for more advanced data structures —
+      linked lists, stacks, queues, trees, and graphs. Mastering arrays is essential
+      for further study in data structures and algorithms.</div>
+    </div>
+
+    <div class="note tip" style="max-width:760px;margin-top:14px;text-align:left">
+      <span class="ico">📌</span>
+      <div><b>Practice recommendation:</b> Write 2–3 short programs daily — computing
+      averages, finding maximum/minimum, reversing arrays, searching elements.
+      Consistent practice builds proficiency.</div>
+    </div>
+
+    <p class="sub" style="margin-top:34px;font-size:12.5px;letter-spacing:.1em">
+      USE <b style="color:#38e1ff">←</b> TO REVIEW &nbsp;·&nbsp; <b style="color:#38e1ff">☰</b> FOR CONTENTS
+    </p>
+  </div>
+</section>
+
+</main>
+
+<div class="controls">
+  <button class="nav-btn" id="prevBtn">← Previous</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn">Next →</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+/* ================================================================
+   0. INIT MERMAID (dark theme matching presentation)
+   ================================================================ */
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  themeVariables: {
+    fontFamily: "'JetBrains Mono', 'Fira Code', Consolas, monospace",
+    fontSize: '13px',
+    primaryColor: '#1e293b',
+    primaryTextColor: '#e8edf7',
+    primaryBorderColor: '#38e1ff',
+    lineColor: '#a78bfa',
+    secondaryColor: '#334155',
+    tertiaryColor: '#0f172a',
+    background: 'transparent',
+    mainBkg: '#1e293b',
+    nodeBorder: '#38e1ff',
+    clusterBkg: 'rgba(30,41,59,0.4)',
+    clusterBorder: '#a78bfa',
+    edgeLabelBackground: '#0f172a',
+    textColor: '#e8edf7'
+  },
+  flowchart: { curve: 'basis', padding: 14 }
+});
+
+/* ================================================================
+   1. C SYNTAX HIGHLIGHTER
+   ================================================================ */
+(function(){
+  const KW = 'auto|break|case|char|const|continue|default|do|double|else|enum|extern|float|for|goto|if|int|long|register|return|short|signed|sizeof|static|struct|switch|typedef|union|unsigned|void|volatile|while|NULL|size_t';
+  const RE = new RegExp(
+    '(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)' +
+    '|("(?:\\\\.|[^"\\\\])*"|\'(?:\\\\.|[^\'\\\\])*\')' +
+    '|(#\\s*\\w+)' +
+    '|(&lt;[A-Za-z0-9_\\/.]+\\.h&gt;)' +
+    '|\\b(' + KW + ')\\b' +
+    '|\\b(\\d+(?:\\.\\d+)?)\\b',
+    'g'
+  );
+
+  document.querySelectorAll('pre code').forEach(function(el){
+    const raw = el.innerHTML;
+    el.innerHTML = raw.replace(RE, function(m, com, str, pre, hdr, kw, num){
+      if (com) return '<span class="tk-com">' + m + '</span>';
+      if (str) return '<span class="tk-str">' + m + '</span>';
+      if (pre) return '<span class="tk-pre">' + m + '</span>';
+      if (hdr) return '<span class="tk-str">' + m + '</span>';
+      if (kw)  return '<span class="tk-kw">'  + m + '</span>';
+      if (num) return '<span class="tk-num">' + m + '</span>';
+      return m;
+    });
+  });
+
+  document.querySelectorAll('pre').forEach(function(pre){
+    const wrap = document.createElement('div');
+    wrap.className = 'code-wrap';
+    pre.parentNode.insertBefore(wrap, pre);
+    wrap.appendChild(pre);
+
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = 'Copy';
+    btn.onclick = function(){
+      navigator.clipboard.writeText(pre.innerText).then(function(){
+        btn.textContent = 'Copied ✓';
+        setTimeout(function(){ btn.textContent = 'Copy'; }, 1400);
+      }).catch(function(){ btn.textContent = 'Failed'; });
+    };
+    wrap.appendChild(btn);
+  });
+})();
+
+/* ================================================================
+   2. SLIDE ENGINE
+   ================================================================ */
+const slides   = Array.from(document.querySelectorAll('.slide'));
+const dotsEl   = document.getElementById('dots');
+const tocList  = document.getElementById('tocList');
+const curEl    = document.getElementById('cur');
+const totalEl  = document.getElementById('total');
+const barEl    = document.getElementById('progressBar');
+let   idx      = 0;
+
+totalEl.textContent = slides.length;
+
+slides.forEach(function(s, i){
+  const d = document.createElement('button');
+  d.className = 'dot';
+  d.title = s.dataset.title;
+  d.onclick = function(){ go(i); };
+  dotsEl.appendChild(d);
+
+  const t = document.createElement('button');
+  t.className = 'toc-item';
+  t.innerHTML = '<span class="num">' + String(i+1).padStart(2,'0') + '</span>' + s.dataset.title;
+  t.onclick = function(){ go(i); closeToc(); };
+  tocList.appendChild(t);
+});
+
+const dots = Array.from(dotsEl.children);
+const tocs = Array.from(tocList.children);
+
+function go(n){
+  n = Math.max(0, Math.min(slides.length - 1, n));
+  if (n === idx && slides[n].classList.contains('active')) return;
+
+  slides[idx].classList.remove('active');
+  dots[idx].classList.remove('on');
+  tocs[idx].classList.remove('on');
+
+  idx = n;
+
+  slides[idx].classList.add('active');
+  slides[idx].scrollTop = 0;
+  dots[idx].classList.add('on');
+  tocs[idx].classList.add('on');
+
+  curEl.textContent = idx + 1;
+  barEl.style.width = ((idx) / (slides.length - 1) * 100) + '%';
+
+  document.getElementById('prevBtn').disabled = (idx === 0);
+  document.getElementById('nextBtn').disabled = (idx === slides.length - 1);
+}
+
+document.getElementById('prevBtn').onclick = function(){ go(idx - 1); };
+document.getElementById('nextBtn').onclick = function(){ go(idx + 1); };
+
+document.addEventListener('keydown', function(e){
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); go(idx + 1); }
+  if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                    { e.preventDefault(); go(idx - 1); }
+  if (e.key === 'Home') { e.preventDefault(); go(0); }
+  if (e.key === 'End')  { e.preventDefault(); go(slides.length - 1); }
+  if (e.key === 'Escape') closeToc();
+});
+
+let touchX = 0, touchY = 0;
+document.addEventListener('touchstart', function(e){
+  touchX = e.changedTouches[0].clientX;
+  touchY = e.changedTouches[0].clientY;
+}, {passive:true});
+document.addEventListener('touchend', function(e){
+  const dx = e.changedTouches[0].clientX - touchX;
+  const dy = e.changedTouches[0].clientY - touchY;
+  if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+    go(dx < 0 ? idx + 1 : idx - 1);
+  }
+}, {passive:true});
+
+const tocEl    = document.getElementById('toc');
+const backdrop = document.getElementById('backdrop');
+function openToc(){ tocEl.classList.add('open'); backdrop.classList.add('on'); }
+function closeToc(){ tocEl.classList.remove('open'); backdrop.classList.remove('on'); }
+document.getElementById('menuBtn').onclick = openToc;
+document.getElementById('closeToc').onclick = closeToc;
+backdrop.onclick = closeToc;
+
+go(0);
+barEl.style.width = '0%';
+
+/* ================================================================
+   2b. RENDER MERMAID DIAGRAMS (after DOM ready)
+   ================================================================ */
+async function renderMermaid(){
+  const nodes = document.querySelectorAll('.mermaid');
+  if (!nodes.length) return;
+  try {
+    await mermaid.run({ nodes: Array.from(nodes) });
+  } catch(err){
+    console.warn('Mermaid render error:', err);
+  }
+}
+window.addEventListener('load', function(){
+  setTimeout(renderMermaid, 60);
+});
+
+/* ================================================================
+   3. DEMO — ARRAY EXPLORER (Slide 2)
+   ================================================================ */
+(function(){
+  const data = [85, 92, 78, 95, 88];
+  const BASE = 1000;
+  let bytes = 4;
+  const viz = document.getElementById('viz1');
+
+  function render(){
+    viz.innerHTML = '';
+    data.forEach(function(v, i){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val">' + v + '</div>';
+      c.onclick = function(){ select(i, c); };
+      viz.appendChild(c);
+    });
+  }
+
+  function select(i, el){
+    Array.from(viz.children).forEach(function(c){ c.classList.remove('hl'); });
+    el.classList.add('hl');
+    document.getElementById('v1i').textContent = '[' + i + ']';
+    document.getElementById('v1v').textContent = data[i];
+    document.getElementById('v1a').textContent = BASE + (i * bytes);
+    document.getElementById('v1b').textContent = bytes;
+    document.getElementById('v1log').innerHTML =
+      'arr[' + i + '] = <b>' + data[i] + '</b> &nbsp;·&nbsp; address = base + ' +
+      i + ' × ' + bytes + ' = <b>' + (BASE + i * bytes) + '</b>';
+  }
+
+  document.querySelectorAll('#archSwitch button').forEach(function(b){
+    b.onclick = function(){
+      document.querySelectorAll('#archSwitch button').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on');
+      bytes = parseInt(b.dataset.bytes, 10);
+      document.getElementById('v1log').innerHTML =
+        'Switched to <b>' + (bytes === 4 ? 'GCC (int = 4 bytes)' : 'Turbo C (int = 2 bytes)') + '</b> mode.';
+    };
+  });
+
+  render();
+})();
+
+/* ================================================================
+   4. DEMO — STATIC ARRAY SNAPSHOT (Slide 4)
+   ================================================================ */
+(function(){
+  const data = [85, 92, 78, 95, 88];
+  const viz = document.getElementById('viz2');
+  data.forEach(function(v, i){
+    const c = document.createElement('div');
+    c.className = 'cell';
+    c.style.width = '54px';
+    c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                  '<div class="cell-val" style="font-size:15px;padding:10px 0">' + v + '</div>';
+    viz.appendChild(c);
+  });
+})();
+
+/* ================================================================
+   5. DEMO — SIZE CALCULATOR (Slide 7)
+   ================================================================ */
+(function(){
+  function calc(){
+    const n = Math.max(1, parseInt(document.getElementById('sizeInput').value, 10) || 0);
+    const tc = n * 2, gc = n * 4;
+    document.getElementById('szTC').textContent = tc.toLocaleString() + ' B';
+    document.getElementById('szGC').textContent = gc.toLocaleString() + ' B';
+
+    const v = document.getElementById('szVerdict');
+    const log = document.getElementById('szLog');
+
+    if (tc > 65536) {
+      v.textContent = '❌ TC fails';
+      v.style.color = '#fb7185';
+      log.innerHTML = 'Turbo C needs <b>' + tc.toLocaleString() + ' bytes</b> but the limit is ' +
+                      '<b>65,536 bytes</b>. Use <code>malloc()</code> instead. GCC handles it fine.';
+    } else {
+      v.textContent = '✅ Both OK';
+      v.style.color = '#4ade80';
+      log.innerHTML = 'Turbo C needs <b>' + tc.toLocaleString() + ' bytes</b> — fits within 64 KB. ' +
+                      'GCC needs <b>' + gc.toLocaleString() + ' bytes</b>.';
+    }
+  }
+  document.getElementById('sizeCalc').onclick = calc;
+  document.getElementById('sizeInput').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') calc();
+  });
+  calc();
+})();
+
+/* ================================================================
+   6. DEMO — TRAVERSAL (Slide 9)
+   ================================================================ */
+(function(){
+  const data = [10, 20, 30, 40, 50];
+  const viz = document.getElementById('viz3');
+  const log = document.getElementById('trLog');
+  let timer = null;
+
+  function build(){
+    viz.innerHTML = '';
+    data.forEach(function(v, i){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val">' + v + '</div>';
+      viz.appendChild(c);
+    });
+  }
+
+  function clear(){
+    if (timer) { clearTimeout(timer); timer = null; }
+    Array.from(viz.children).forEach(function(c){ c.className = 'cell'; });
+  }
+
+  function run(order, label){
+    clear();
+    const cells = Array.from(viz.children);
+    let k = 0;
+    (function step(){
+      if (k > 0) cells[order[k-1]].classList.remove('hl');
+      if (k >= order.length) {
+        log.innerHTML = '<b>' + label + '</b> complete — visited <b>' + order.length + '</b> elements.';
+        timer = null;
+        return;
+      }
+      const i = order[k];
+      cells[i].classList.add('hl');
+      log.innerHTML = label + ' → i = <b>' + i + '</b> &nbsp;·&nbsp; arr[' + i + '] = <b>' + data[i] + '</b>';
+      k++;
+      timer = setTimeout(step, 480);
+    })();
+  }
+
+  document.getElementById('trFwd').onclick = function(){ run([0,1,2,3,4], 'Forward loop'); };
+  document.getElementById('trBwd').onclick = function(){ run([4,3,2,1,0], 'Backward loop'); };
+  document.getElementById('trReset').onclick = function(){
+    clear();
+    log.textContent = 'Reset. Press a button to observe the loop execution.';
+  };
+
+  build();
+})();
+
+/* ================================================================
+   7. DEMO — INSERT / DELETE (Slide 10)
+   ================================================================ */
+(function(){
+  const CAP = 12;
+  const INIT = [10, 20, 30, 40, 50];
+  let arr = INIT.slice();
+  const viz = document.getElementById('viz4');
+  const log = document.getElementById('insLog');
+
+  function render(hlIndex, hlClass){
+    viz.innerHTML = '';
+    for (let i = 0; i < CAP; i++){
+      const c = document.createElement('div');
+      const has = i < arr.length;
+      c.className = 'cell' + (has ? '' : ' empty');
+      if (i === hlIndex && has) c.classList.add(hlClass || 'hl');
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val">' + (has ? arr[i] : '·') + '</div>';
+      c.style.width = '58px';
+      viz.appendChild(c);
+    }
+    document.getElementById('insLen').textContent = arr.length;
+    document.getElementById('insCap').textContent = CAP;
+  }
+
+  document.getElementById('doInsert').onclick = function(){
+    const pos = parseInt(document.getElementById('insPos').value, 10);
+    const val = parseInt(document.getElementById('insVal').value, 10);
+    if (isNaN(pos) || isNaN(val)) { log.textContent = '⚠️ Enter a valid position and value.'; return; }
+    if (pos < 0 || pos > arr.length) { log.textContent = '⚠️ Invalid position: ' + pos; return; }
+    if (arr.length >= CAP) { log.textContent = '⚠️ Array is full.'; return; }
+
+    arr.splice(pos, 0, val);
+    render(pos, 'hl');
+    log.innerHTML = 'Inserted <b>' + val + '</b> at index <b>' + pos + '</b> — ' +
+                    'shifted ' + (arr.length - pos - 1) + ' element(s) right. Length = <b>' + arr.length + '</b>.';
+  };
+
+  document.getElementById('doDelete').onclick = function(){
+    const pos = parseInt(document.getElementById('delPos').value, 10);
+    if (isNaN(pos)) { log.textContent = '⚠️ Enter a valid position.'; return; }
+    if (pos < 0 || pos >= arr.length) { log.textContent = '⚠️ Invalid position: ' + pos; return; }
+    if (arr.length === 0) { log.textContent = '⚠️ Array is empty.'; return; }
+
+    const removed = arr[pos];
+    arr.splice(pos, 1);
+    render(-1);
+    log.innerHTML = 'Deleted <b>' + removed + '</b> from index <b>' + pos + '</b> — ' +
+                    'shifted remaining elements left. Length = <b>' + arr.length + '</b>.';
+  };
+
+  document.getElementById('doResetIns').onclick = function(){
+    arr = INIT.slice();
+    render(-1);
+    log.textContent = 'Reset to original 5 elements.';
+  };
+
+  render(-1);
+})();
+
+/* ================================================================
+   8. DEMO — SEARCH (Slide 11)
+   ================================================================ */
+(function(){
+  const data = [5, 12, 19, 27, 33, 41, 58, 66, 74, 89];
+  const viz  = document.getElementById('viz5');
+  const log  = document.getElementById('searchLog');
+  let busy = false;
+
+  function build(){
+    viz.innerHTML = '';
+    data.forEach(function(v, i){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.style.width = '60px';
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val" style="font-size:15px">' + v + '</div>';
+      viz.appendChild(c);
+    });
+  }
+  const cells = function(){ return Array.from(viz.children); };
+
+  function clear(){
+    cells().forEach(function(c){ c.className = 'cell'; });
+  }
+
+  function getKey(){
+    const k = parseInt(document.getElementById('searchKey').value, 10);
+    if (isNaN(k)) { log.textContent = '⚠️ Enter a valid number.'; return null; }
+    return k;
+  }
+
+  document.getElementById('runLinear').onclick = function(){
+    if (busy) return;
+    const key = getKey(); if (key === null) return;
+    busy = true; clear();
+    const cs = cells();
+    let i = 0;
+    (function step(){
+      if (i >= data.length){
+        log.innerHTML = '🔍 Linear Search: key <b>' + key + '</b> not found — <b>' + data.length + '</b> comparisons.';
+        busy = false; return;
+      }
+      cs.forEach(function(c){ c.classList.remove('hl'); });
+      cs[i].classList.add('hl');
+      if (data[i] === key){
+        cs[i].classList.remove('hl');
+        cs[i].classList.add('done');
+        log.innerHTML = '🔍 Linear Search: found <b>' + key + '</b> at index <b>' + i +
+                        '</b> after <b>' + (i + 1) + '</b> comparison(s).';
+        busy = false; return;
+      }
+      log.innerHTML = '🔍 Linear Search: checking index <b>' + i + '</b> → ' + data[i] + ' ≠ ' + key;
+      i++;
+      setTimeout(step, 320);
+    })();
+  };
+
+  document.getElementById('runBinary').onclick = function(){
+    if (busy) return;
+    const key = getKey(); if (key === null) return;
+    busy = true; clear();
+    const cs = cells();
+    let low = 0, high = data.length - 1, steps = 0;
+
+    (function step(){
+      cs.forEach(function(c){ c.classList.remove('low','high','mid','hl'); });
+
+      if (low > high){
+        log.innerHTML = '⚡ Binary Search: key <b>' + key + '</b> not found — <b>' + steps + '</b> comparison(s).';
+        busy = false; return;
+      }
+
+      const mid = low + Math.floor((high - low) / 2);
+      cs[low].classList.add('low');
+      cs[high].classList.add('high');
+      cs[mid].classList.add('mid');
+      steps++;
+
+      log.innerHTML = '⚡ Binary Search: low=<b>' + low + '</b> · mid=<b>' + mid +
+                      '</b> · high=<b>' + high + '</b> → arr[mid] = ' + data[mid];
+
+      if (data[mid] === key){
+        cs[mid].classList.remove('mid');
+        cs[mid].classList.add('done');
+        log.innerHTML = '⚡ Binary Search: found <b>' + key + '</b> at index <b>' + mid +
+                        '</b> in only <b>' + steps + '</b> comparison(s)!';
+        busy = false; return;
+      }
+
+      if (data[mid] < key) low = mid + 1;
+      else                 high = mid - 1;
+
+      setTimeout(step, 620);
+    })();
+  };
+
+  document.getElementById('searchReset').onclick = function(){
+    if (busy) return;
+    clear();
+    log.textContent = 'Reset. Enter a key and choose an algorithm.';
+  };
+
+  build();
+})();
+
+/* ================================================================
+   9. DEMO — SORT (Slide 12)
+   ================================================================ */
+(function(){
+  const ORIGINAL = [64, 25, 12, 22, 11, 90, 45, 33];
+  let arr = ORIGINAL.slice();
+  const viz = document.getElementById('viz6');
+  const log = document.getElementById('sortLog');
+  let busy = false;
+
+  function build(){
+    viz.innerHTML = '';
+    arr.forEach(function(v, i){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val">' + v + '</div>';
+      viz.appendChild(c);
+    });
+  }
+
+  document.getElementById('sortBtn').onclick = function(){
+    if (busy) return;
+    busy = true;
+    arr.sort(function(a, b){ return a - b; });
+    build();
+    log.innerHTML = '⚡ <code>qsort(arr, n, sizeof(int), compare)</code> executed — array is now sorted in ascending order.';
+    setTimeout(function(){ busy = false; }, 400);
+  };
+
+  document.getElementById('sortReset').onclick = function(){
+    if (busy) return;
+    arr = ORIGINAL.slice();
+    for (let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    build();
+    log.textContent = 'Array shuffled. Press "Run qsort()" to sort.';
+  };
+
+  build();
+})();
+
+/* ================================================================
+   10. DEMO — UTILITY FUNCTIONS (Slide 15)
+   ================================================================ */
+(function(){
+  let arr = [23, 7, 91, 45, 12, 68, 34];
+  const viz = document.getElementById('viz7');
+
+  function render(){
+    viz.innerHTML = '';
+    arr.forEach(function(v, i){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.style.width = '58px';
+      c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                    '<div class="cell-val" style="font-size:15px">' + v + '</div>';
+      viz.appendChild(c);
+    });
+
+    let max = arr[0], min = arr[0], sum = 0;
+    arr.forEach(function(v){
+      if (v > max) max = v;
+      if (v < min) min = v;
+      sum += v;
+    });
+
+    document.getElementById('uMax').textContent = max;
+    document.getElementById('uMin').textContent = min;
+    document.getElementById('uSum').textContent = sum;
+    document.getElementById('uAvg').textContent = (sum / arr.length).toFixed(2);
+  }
+
+  document.getElementById('uShuffle').onclick = function(){
+    arr = arr.map(function(){ return Math.floor(Math.random() * 99) + 1; });
+    render();
+  };
+
+  render();
+})();
+
+/* ================================================================
+   11. DEMO — 2D ARRAY FLAT VIEW (Slide 16)
+   ================================================================ */
+(function(){
+  const viz = document.getElementById('viz8');
+  let n = 1;
+  for (let i = 0; i < 3; i++){
+    for (let j = 0; j < 3; j++){
+      const c = document.createElement('div');
+      c.className = 'cell';
+      c.style.width = '52px';
+      c.innerHTML = '<div class="cell-idx" style="font-size:9px">[' + i + '][' + j + ']</div>' +
+                    '<div class="cell-val" style="font-size:14px;padding:9px 0">' + (n++) + '</div>';
+      viz.appendChild(c);
+    }
+  }
+})();
+
+/* ================================================================
+   12. DEMO — STRING VISUAL (Slide 17)
+   ================================================================ */
+(function(){
+  const chars = ['H','e','l','l','o','\\0'];
+  const viz = document.getElementById('viz9');
+  chars.forEach(function(ch, i){
+    const c = document.createElement('div');
+    c.className = 'cell';
+    c.style.width = '58px';
+    if (ch === '\\0') c.classList.add('hl');
+    const disp = (ch === '\\0') ? "\\0" : ch;
+    c.innerHTML = '<div class="cell-idx">[' + i + ']</div>' +
+                  '<div class="cell-val" style="font-size:16px">' + disp + '</div>';
+    viz.appendChild(c);
+  });
+})();
+
+/* ================================================================
+   13. QUIZ (Slide 21)
+   ================================================================ */
+(function(){
+  const questions = [
+    {
+      q: 'What is the last valid index of <code>int marks[10];</code>?',
+      opts: ['10', '9', '11', '0'],
+      correct: 1
+    },
+    {
+      q: 'Which compiler supports Variable Length Arrays (C99)?',
+      opts: ['Turbo C only', 'GCC (C99+)', 'Neither', 'Both equally'],
+      correct: 1
+    },
+    {
+      q: 'What is the maximum size of a single object in Turbo C?',
+      opts: ['1 MB', '64 KB', '16 MB', 'Unlimited'],
+      correct: 1
+    },
+    {
+      q: 'Which header declares <code>qsort()</code>?',
+      opts: ['&lt;stdio.h&gt;', '&lt;string.h&gt;', '&lt;stdlib.h&gt;', '&lt;math.h&gt;'],
+      correct: 2
+    },
+    {
+      q: 'Inside a function, what does <code>sizeof(arr)</code> give when <code>arr</code> is a parameter declared as <code>int arr[]</code>?',
+      opts: ['Size of the whole array', 'Size of a pointer', 'Number of elements', 'Compile error'],
+      correct: 1
+    },
+    {
+      q: 'How many bytes should be reserved for a string of length 5?',
+      opts: ['5', '4', '6', '10'],
+      correct: 2
+    }
+  ];
+
+  const box = document.getElementById('quiz');
+  let score = 0, answered = 0;
+
+  questions.forEach(function(item, qi){
+    const div = document.createElement('div');
+    div.className = 'q card';
+    div.style.marginBottom = '14px';
+
+    let html = '<div class="qt">' + (qi + 1) + '. ' + item.q + '</div><div class="opts">';
+    item.opts.forEach(function(o, oi){
+      html += '<button class="opt" data-q="' + qi + '" data-o="' + oi + '">' +
+              String.fromCharCode(65 + oi) + ') ' + o + '</button>';
+    });
+    html += '</div>';
+    div.innerHTML = html;
+    box.appendChild(div);
+  });
+
+  box.querySelectorAll('.opt').forEach(function(btn){
+    btn.onclick = function(){
+      const qi = parseInt(btn.dataset.q, 10);
+      const oi = parseInt(btn.dataset.o, 10);
+      const parent = btn.closest('.q');
+      if (parent.dataset.done) return;
+      parent.dataset.done = '1';
+
+      const correct = questions[qi].correct;
+      const opts = parent.querySelectorAll('.opt');
+
+      opts.forEach(function(o, i){
+        o.disabled = true;
+        if (i === correct) o.classList.add('right');
+      });
+
+      if (oi === correct){
+        score++;
+      } else {
+        btn.classList.add('wrong');
+      }
+
+      answered++;
+      document.getElementById('quizScore').textContent = score;
+      if (answered === questions.length){
+        const msg = document.getElementById('quizMsg');
+        if (score === 6)      msg.innerHTML = '🏆 Perfect score! You have mastered arrays.';
+        else if (score >= 4)  msg.innerHTML = '👍 Good work! Review the topics you missed.';
+        else                  msg.innerHTML = '📚 Review the earlier chapters and try again.';
+      }
+    };
+  });
+})();
+</script>
+
+</body>
+</html>
